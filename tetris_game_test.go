@@ -42,29 +42,15 @@ func TestGameCheckBad(t *testing.T) {
 }
 
 func TestTetrisGame_Put(t *testing.T) {
-	type fields struct {
-		rows                int
-		cols                int
-		board               []TetrisCell
-		points              int
-		level               int
-		falling             TetrisBlock
-		next                TetrisBlock
-		stored              TetrisBlock
-		ticks_until_gravity int
-		linesRemaining      int
-	}
 	type args struct {
 		block TetrisBlock
 	}
 	tests := []struct {
 		name   string
-		fields fields
+		fields TetrisGame
 		args   args
 	}{
-		// TODO: Add test cases.
-		{"TET_J", fields{rows: 22, cols: 10},
-			args{block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}}}},
+		{"TET_J", *Create(22, 10), args{block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
