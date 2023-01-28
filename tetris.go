@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 const (
 	TC_EMPTY_STR     = " "
 	TC_BLOCK_STR     = "\u2588"
@@ -114,26 +116,64 @@ type TetrisGame struct {
 // orientation (0-3).  The final array contains 4 tetris_location
 // objects, each mapping to an offset from a point on the upper left
 // that is the tetromino "origin".
-var TETROMINOS = func() [][][]*TetrisLocation {
-	const x = NUM_TETROMINOS
-	const y = NUM_ORIENTATIONS
-	const z = TETRIS
-
-	var locs [][][]*TetrisLocation
-	locs = make([][][]*TetrisLocation, x)
-
-	for i := range locs {
-		locs[i] = make([][]*TetrisLocation, y)
-		for j := range locs[i] {
-			locs[i][j] = make([]*TetrisLocation, z)
-		}
-	}
-	return locs
-}()
+var TETRONIMOS = [][][]TetrisLocation{
+	// I block
+	{
+		{{1, 0}, {1, 1}, {1, 2}, {1, 3}},
+		{{0, 2}, {1, 2}, {2, 2}, {3, 2}},
+		{{3, 0}, {3, 1}, {3, 2}, {3, 3}},
+		{{0, 1}, {1, 1}, {2, 1}, {3, 1}},
+	},
+	// J block
+	{
+		{{0, 0}, {1, 0}, {1, 1}, {1, 2}},
+		{{0, 1}, {0, 2}, {1, 1}, {2, 1}},
+		{{1, 0}, {1, 1}, {1, 2}, {2, 2}},
+		{{0, 1}, {1, 1}, {2, 0}, {2, 1}},
+	},
+	// L block
+	{
+		{{0, 2}, {1, 0}, {1, 1}, {1, 2}},
+		{{0, 1}, {1, 1}, {2, 1}, {2, 2}},
+		{{1, 0}, {1, 1}, {1, 2}, {2, 0}},
+		{{0, 0}, {0, 1}, {1, 1}, {2, 1}},
+	},
+	// O block
+	{
+		{{0, 1}, {0, 2}, {1, 1}, {1, 2}},
+		{{0, 1}, {0, 2}, {1, 1}, {1, 2}},
+		{{0, 1}, {0, 2}, {1, 1}, {1, 2}},
+		{{0, 1}, {0, 2}, {1, 1}, {1, 2}},
+	},
+	// S block
+	{
+		{{0, 1}, {0, 2}, {1, 0}, {1, 1}},
+		{{0, 1}, {1, 1}, {1, 2}, {2, 2}},
+		{{1, 1}, {1, 2}, {2, 0}, {2, 1}},
+		{{0, 0}, {1, 0}, {1, 1}, {2, 1}},
+	},
+	// T block
+	{
+		{{0, 1}, {1, 0}, {1, 1}, {1, 2}},
+		{{0, 1}, {1, 1}, {1, 2}, {2, 1}},
+		{{1, 0}, {1, 1}, {1, 2}, {2, 1}},
+		{{0, 1}, {1, 0}, {1, 1}, {2, 1}},
+	},
+	// Z block
+	{
+		{{0, 0}, {0, 1}, {1, 1}, {1, 2}},
+		{{0, 2}, {1, 1}, {1, 2}, {2, 1}},
+		{{1, 0}, {1, 1}, {2, 1}, {2, 2}},
+		{{0, 1}, {1, 0}, {1, 1}, {2, 0}},
+	},
+}
 
 // This array tells you how many ticks per gravity by level.  Decreases as level
 // increases, to add difficulty.
-var GRAVITY_LEVEL = make([]int, MAX_LEVEL+1)
+var GRAVITY_LEVEL = []int{
+	50, 48, 46, 44, 42, 40, 38, 36, 34, 32,
+	30, 28, 26, 24, 22, 20, 16, 12, 8, 4,
+}
 
 func TYPE_TO_CELL(x int) int {
 	return x + 1
@@ -159,4 +199,9 @@ func MIN(x, y int) int {
 		return x
 	}
 	return y
+}
+
+func main() {
+	fmt.Println(TETRONIMOS)
+	fmt.Println(GRAVITY_LEVEL)
 }
