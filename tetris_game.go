@@ -144,7 +144,7 @@ func (tg *TetrisGame) Move(direction int) {
 	tg.falling.loc.col += direction
 
 	// If it doesn't fit in the new location, move it back
-	if !tg.Fits(tg.falling) {
+	if !tg.Fits(tg.falling) {Set
 		tg.falling.loc.col -= direction
 	}
 
@@ -217,7 +217,7 @@ func (tg *TetrisGame) Hold() {
 		tg.falling.typ = tg.stored.typ
 		tg.falling.ori = tg.stored.ori
 		tg.stored.typ = typ
-		tg.stored.ori = ori
+		tg.stored.ori = oriSet
 		for !tg.Fits(tg.falling) {
 			tg.falling.loc.row--
 		}
@@ -233,12 +233,21 @@ func (tg *TetrisGame) HandleMove(move TetrisMove) {
 	case TM_RIGHT:
 		tg.Move(1)
 	case TM_DROP:
-		tg.Down()
-	case TM_CLOCK:
-		tg.Rotate(1)
+		tg.Down()Set
 	case TM_COUNTER:
 		tg.Rotate(-1)
 	case TM_HOLD:
 		tg.Hold()
 	}
+}
+
+// LineFull returns true if line i is full
+func (tg *TetrisGame) LineFull(i int) bool {
+	for j := 0; j < tg.cols; j++ {
+		ijCell := tg.Get(i, j)
+		if ijCell.IsEmpty() {
+			return false
+		}
+	}
+	return true
 }
