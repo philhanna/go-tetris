@@ -13,6 +13,27 @@ const (
 	TET_Z
 )
 
+// ToCell converts a tetromino type to its corresponding cell.
+func (tt TetrisType) ToCell() TetrisCell {
+	switch tt {
+	case TET_I:
+		return TC_CELLI
+	case TET_J:
+		return TC_CELLJ
+	case TET_L:
+		return TC_CELLL
+	case TET_O:
+		return TC_CELLO
+	case TET_S:
+		return TC_CELLS
+	case TET_T:
+		return TC_CELLT
+	case TET_Z:
+		return TC_CELLZ
+	}
+	return 0
+}
+
 // String returns the representation of this object as a string.
 func (tt TetrisType) String() string {
 	switch tt {
@@ -30,7 +51,6 @@ func (tt TetrisType) String() string {
 		return "T"
 	case TET_Z:
 		return "Z"
-	default:
-		return "?"
 	}
+	return ""
 }

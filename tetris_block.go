@@ -7,5 +7,5 @@ package tetris
 type TetrisBlock struct {
 	typ TetrisType
 	ori int
-	log TetrisLocation
+	loc TetrisLocation
 }
