@@ -5,7 +5,7 @@ type TetrisGame struct {
 	// Game board
 	rows  int
 	cols  int
-	board []byte
+	board []TetrisCell
 
 	// Scoring information
 	points int
@@ -25,13 +25,13 @@ type TetrisGame struct {
 	lines_remaining int
 }
 
-// Get returns the block at the given row and column.
-func (tg *TetrisGame) Get(row int, col int) byte {
+// Get returns the cell at the given row and column.
+func (tg *TetrisGame) Get(row int, col int) TetrisCell {
 	return tg.board[tg.cols*row+col]
 }
 
-// Set sets the block at the given row and column.
-func (tg *TetrisGame) Set(row int, col int, value byte) {
+// Set sets the cell at the given row and column.
+func (tg *TetrisGame) Set(row int, col int, value TetrisCell) {
 	index := tg.cols*row + col
 	tg.board[index] = value
 }
