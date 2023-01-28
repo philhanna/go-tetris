@@ -160,9 +160,6 @@ func TestTetrisGame_DoGravityTick(t *testing.T) {
 		// TODO Add code to check before and after value of the board
 
 		t.Run(tt.name, func(t *testing.T) {
-			// dump("Before", &tt.fields)
-			tt.fields.falling.loc.col = 86
-			before := tt.fields.next
 			tg := &TetrisGame{
 				rows:                tt.fields.rows,
 				cols:                tt.fields.cols,
@@ -177,9 +174,6 @@ func TestTetrisGame_DoGravityTick(t *testing.T) {
 			}
 			tg.ticks_until_gravity = 0
 			tg.DoGravityTick()
-			// dump("After", &tt.fields)
-			after := tt.fields.next
-			log.Printf("tt.fields.falling: before=%v,after=%v\n", before, after)
 		})
 	}
 }
