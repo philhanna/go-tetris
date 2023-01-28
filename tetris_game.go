@@ -101,3 +101,53 @@ func (tg *TetrisGame) NewFalling() {
 	tg.next.loc.row = 0
 	tg.next.loc.col = tg.cols/2 - 2
 }
+
+// DoGravityTick ticks gravity, and moves the block down if gravity
+// should act.
+func (tg *TetrisGame) DoGravityTick() {
+
+	// Count down the clock
+	tg.ticks_until_gravity--
+
+	// If time is expired:
+	if tg.ticks_until_gravity <= 0 {
+
+		// Temporarily remove the falling block from its current
+		// location and increment its row
+		tg.Remove(tg.falling)
+		tg.falling.loc.row++
+
+		// If it still fits in the board, reset the clock according to
+		// the gravity for this level
+		if tg.Fits(tg.falling) {
+			tg.ticks_until_gravity = GRAVITY_LEVEL[tg.level]
+		} else {
+
+			// Otherwise, restore the falling block's row, store it on
+			// the pile, and create a new falling block (actually, just
+			// move the "next" to "falling"
+			tg.falling.loc.row--
+			tg.Put(tg.falling)
+			tg.NewFalling()
+		}
+		tg.Put(tg.falling)
+	}
+}
+
+// Move moves the falling tetris block left (-1) or right (+1). If it
+// doesn't fit, put it back.
+func (tg *TetrisGame) Move(direction int) {
+
+	// Temporarily remove the falling block and update its column
+	// according to the desired direction.
+	tg.Remove(tg.falling)
+	tg.falling.loc.col += direction
+
+	// If it doesn't fit in the new location, move it back
+	if !tg.Fits(tg.falling) {
+		tg.falling.loc.col -= direction
+	}
+
+	// Restore the falling block in the board
+	tg.Put(tg.falling)
+}
