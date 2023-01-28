@@ -1,6 +1,10 @@
 package tetris
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 // A TetrisGame is the game object
 type TetrisGame struct {
@@ -25,6 +29,34 @@ type TetrisGame struct {
 
 	// Number of lines until you advance to the next level.
 	lines_remaining int
+}
+
+func (tg *TetrisGame) Init(rows int, cols int) {
+	tg.rows = rows
+	tg.cols = cols
+	tg.board = make([]TetrisCell, (rows * cols))
+	for i := 0; i < rows*cols; i++ {
+		tg.board[i] = TC_EMPTY
+	}
+	tg.points = 0
+	tg.level = 0
+	tg.ticks_until_gravity = GRAVITY_LEVEL[0]
+	tg.lines_remaining = LINES_PER_LEVEL
+	rand.Seed(time.Now().UnixNano())
+	tg.NewFalling()
+	tg.NewFalling()
+	tg.stored.typ = -1
+	tg.stored.ori = 0
+	tg.stored.loc.row = 0
+	tg.next.loc.col = tg.cols/2 - 2
+	fmt.Printf("%d", tg.falling.loc.col)
+}
+
+// Create is the TetrisGame constructor
+func Create(rows int, cols int) *TetrisGame {
+	tg := new(TetrisGame)
+	tg.Init(rows, cols)
+	return tg
 }
 
 // Get returns the cell at the given row and column.
