@@ -17,7 +17,7 @@ func TestCellString(t *testing.T) {
 		{TC_CELLS, "S"},
 		{TC_CELLT, "T"},
 		{TC_CELLZ, "Z"},
-		{45, "?"},
+		{86, "?"},
 	}
 	for _, tc := range testCases {
 		have := tc.cell.String()
