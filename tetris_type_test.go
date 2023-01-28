@@ -16,7 +16,7 @@ func TestTypeAll(t *testing.T) {
 		{TET_S, "S"},
 		{TET_T, "T"},
 		{TET_Z, "Z"},
-		{86, "?"},
+		{86, ""},
 	}
 	for _, tc := range testCases {
 		have := tc.typ.String()
