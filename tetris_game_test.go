@@ -17,9 +17,9 @@ func setup() *TetrisGame {
 
 func TestGameGet(t *testing.T) {
 	tg := setup()
-	// fmt.Printf("tg=%v\n", tg)
-	have := tg.Get(0, 0)
-	want := TC_EMPTY
+	tg.Set(3, 4, TC_CELLL)
+	have := tg.Get(3, 4)
+	want := TC_CELLL
 	if have != want {
 		t.Errorf("have=%d,want=%d", have, want)
 	}

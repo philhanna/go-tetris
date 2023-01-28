@@ -122,10 +122,7 @@ func (tg *TetrisGame) DoGravityTick() {
 		if tg.Fits(tg.falling) {
 			tg.ticks_until_gravity = GRAVITY_LEVEL[tg.level]
 		} else {
-
-			// Otherwise, restore the falling block's row, store it on
-			// the pile, and create a new falling block (actually, just
-			// move the "next" to "falling"
+			// Move the "next" to "falling"
 			tg.falling.loc.row--
 			tg.Put(tg.falling)
 			tg.NewFalling()
@@ -145,7 +142,6 @@ func (tg *TetrisGame) Move(direction int) {
 
 	// If it doesn't fit in the new location, move it back
 	if !tg.Fits(tg.falling) {
-		Set
 		tg.falling.loc.col -= direction
 	}
 
@@ -218,7 +214,7 @@ func (tg *TetrisGame) Hold() {
 		tg.falling.typ = tg.stored.typ
 		tg.falling.ori = tg.stored.ori
 		tg.stored.typ = typ
-		tg.stored.ori = oriSet
+		tg.stored.ori = ori
 		for !tg.Fits(tg.falling) {
 			tg.falling.loc.row--
 		}
