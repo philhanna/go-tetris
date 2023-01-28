@@ -101,6 +101,16 @@ func TestTetrisGame_Fits(t *testing.T) {
 					loc: TetrisLocation{4, 5}}},
 			want: true,
 		},
+		{
+			name:   "TET_S",
+			fields: *Create(22, 10),
+			args: args{
+				block: TetrisBlock{
+					typ: TET_S,
+					ori: 0,
+					loc: TetrisLocation{4, 27}}},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -116,8 +126,8 @@ func TestTetrisGame_Fits(t *testing.T) {
 				ticks_until_gravity: tt.fields.ticks_until_gravity,
 				linesRemaining:      tt.fields.linesRemaining,
 			}
-			if got := tg.Fits(tt.args.block); got != tt.want {
-				t.Errorf("TetrisGame.Fits() = %v, want %v", got, tt.want)
+			if have := tg.Fits(tt.args.block); have != tt.want {
+				t.Errorf("name=%s: TetrisGame.Fits() = %v, want %v", tt.name, have, tt.want)
 			}
 		})
 	}
