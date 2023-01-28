@@ -258,3 +258,21 @@ func (tg *TetrisGame) ShiftLines(r int) {
 		}
 	}
 }
+
+// CheckLines find rows that are filled, removes them, shift, and
+// returns the number of cleared rows.
+func (tg *TetrisGame) CheckLines() int {
+	nLines := 0
+	tg.Remove(tg.falling) // Don't want to mess up falling block
+
+	for i := tg.rows - 1; i >= 0; i-- {
+		if tg.LineFull(i) {
+			tg.ShiftLines(i)
+			i++ // Do this line over again since they're shifted
+			nLines++
+		}
+	}
+
+	tg.Put(tg.falling)
+	return nLines
+}
