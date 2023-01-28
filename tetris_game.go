@@ -31,6 +31,26 @@ type TetrisGame struct {
 	linesRemaining int
 }
 
+// Dump creates a string representation of the board, with a leading
+// row number, the contents of that row, then a newline, for each row.
+func (tg *TetrisGame) Dump() string {
+	sb := "\n"
+	p := 0
+	for row := 0; row < tg.rows; row++ {
+		sb += fmt.Sprintf("%2d: ", row)
+		cells := ""
+		for col := 0; col < tg.cols; col++ {
+			cell := tg.board[p]
+			p++
+			cells += cell.String()
+		}
+		sb += cells
+		sb += "\n"
+	}
+	return sb
+}
+
+// Init fills in the elements of a newly created TetrisGame object
 func (tg *TetrisGame) Init(rows int, cols int) {
 	tg.rows = rows
 	tg.cols = cols
