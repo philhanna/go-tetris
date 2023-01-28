@@ -93,8 +93,8 @@ func MIN(x, y int) int {
 	return y
 }
 
-// RandomTetronimo returns a random tetromino type
-func RandomTetronimo() int {
+// RandomTetrominoType returns a random tetromino type
+func RandomTetrominoType() int {
 	r := rand.Intn(NUM_TETROMINOS)
 	return r
 }
