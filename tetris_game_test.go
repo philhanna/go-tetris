@@ -80,3 +80,44 @@ func TestTetrisGame_Remove(t *testing.T) {
 		})
 	}
 }
+
+func TestTetrisGame_Fits(t *testing.T) {
+	type args struct {
+		block TetrisBlock
+	}
+	tests := []struct {
+		name   string
+		fields TetrisGame
+		args   args
+		want   bool
+	}{
+		{"TET_J",
+			*Create(22, 10),
+			args{
+				block: TetrisBlock{
+					typ: TET_J,
+					ori: 0,
+					loc: TetrisLocation{4, 5}},
+			},
+			true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tg := &TetrisGame{
+				rows:                tt.fields.rows,
+				cols:                tt.fields.cols,
+				board:               tt.fields.board,
+				points:              tt.fields.points,
+				level:               tt.fields.level,
+				falling:             tt.fields.falling,
+				next:                tt.fields.next,
+				stored:              tt.fields.stored,
+				ticks_until_gravity: tt.fields.ticks_until_gravity,
+				linesRemaining:      tt.fields.linesRemaining,
+			}
+			if got := tg.Fits(tt.args.block); got != tt.want {
+				t.Errorf("TetrisGame.Fits() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
