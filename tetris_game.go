@@ -28,7 +28,7 @@ type TetrisGame struct {
 	ticks_until_gravity int
 
 	// Number of lines until you advance to the next level.
-	lines_remaining int
+	linesRemaining int
 }
 
 func (tg *TetrisGame) Init(rows int, cols int) {
@@ -41,7 +41,7 @@ func (tg *TetrisGame) Init(rows int, cols int) {
 	tg.points = 0
 	tg.level = 0
 	tg.ticks_until_gravity = GRAVITY_LEVEL[0]
-	tg.lines_remaining = LINES_PER_LEVEL
+	tg.linesRemaining = LINES_PER_LEVEL
 	rand.Seed(time.Now().UnixNano())
 	tg.NewFalling()
 	tg.NewFalling()
@@ -307,4 +307,21 @@ func (tg *TetrisGame) CheckLines() int {
 
 	tg.Put(tg.falling)
 	return nLines
+}
+
+// AdjustScore adjusts the score for the game, given how many lines
+// were just cleared
+func (tg *TetrisGame) AdjustScore(linesCleared int) {
+	lineMultipliers := []int{0, 40, 100, 300, 1200}
+	lineMultiplier := lineMultipliers[linesCleared]
+	nextLevel := tg.level + 1
+	addedPoints := lineMultiplier * nextLevel
+	tg.points += addedPoints
+	if linesCleared >= tg.linesRemaining {
+		tg.level = MIN(MAX_LEVEL, tg.level+1)
+		linesCleared -= tg.linesRemaining
+		tg.linesRemaining = LINES_PER_LEVEL - linesCleared
+	} else {
+		tg.linesRemaining -= linesCleared
+	}
 }
