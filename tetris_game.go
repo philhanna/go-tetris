@@ -168,3 +168,37 @@ func (tg *TetrisGame) Down() {
 	tg.Put(tg.falling)
 	tg.NewFalling()
 }
+
+// Rotate rotates the falling block in either direction (+/-1).
+func (tg *TetrisGame) Rotate(direction int) {
+
+	tg.Remove(tg.falling)
+
+	for {
+		tg.falling.ori = (tg.falling.ori + direction) % NUM_ORIENTATIONS
+
+		// If the new orientation fits, we're done.
+		if tg.Fits(tg.falling) {
+			break
+		}
+
+		// Otherwise, try moving left to make it fit
+		tg.falling.loc.col--
+		if tg.Fits(tg.falling) {
+			break
+		}
+
+		// Finally, try moving right to make it fit
+		tg.falling.loc.col += 2
+		if tg.Fits(tg.falling) {
+			break
+		}
+
+		// Put it back in its original location and try the next
+		// orientation. Worst case, we come back to the original
+		// orientation and it fits, so this loop will terminate.
+		tg.falling.loc.col--
+	}
+
+	tg.Put(tg.falling)
+}
