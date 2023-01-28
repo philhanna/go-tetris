@@ -9,3 +9,13 @@ type TetrisBlock struct {
 	ori int
 	loc TetrisLocation
 }
+
+// NewTetrisBlock is a constructor for a TetrisBlock
+func NewTetrisBlock(typ TetrisType, ori int, row int, col int) TetrisBlock {
+	tb := new(TetrisBlock)
+	tb.typ = typ
+	tb.ori = ori
+	tb.loc.row = row
+	tb.loc.col = col
+	return *tb
+}
