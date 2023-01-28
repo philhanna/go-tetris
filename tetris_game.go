@@ -151,3 +151,20 @@ func (tg *TetrisGame) Move(direction int) {
 	// Restore the falling block in the board
 	tg.Put(tg.falling)
 }
+
+// Down sends the falling tetris block to the bottom.
+func (tg *TetrisGame) Down() {
+
+	// Remove the falling block, and move it down until it won't fit
+	tg.Remove(tg.falling)
+	for tg.Fits(tg.falling) {
+		tg.falling.loc.row++
+	}
+
+	// Whoa, back up, we're as far down as we can go
+	tg.falling.loc.row--
+
+	// Put it back on the board
+	tg.Put(tg.falling)
+	tg.NewFalling()
+}
