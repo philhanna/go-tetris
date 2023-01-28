@@ -91,15 +91,16 @@ func TestTetrisGame_Fits(t *testing.T) {
 		args   args
 		want   bool
 	}{
-		{"TET_J",
-			*Create(22, 10),
-			args{
+		{
+			name:   "TET_J",
+			fields: *Create(22, 10),
+			args: args{
 				block: TetrisBlock{
 					typ: TET_J,
 					ori: 0,
-					loc: TetrisLocation{4, 5}},
-			},
-			true},
+					loc: TetrisLocation{4, 5}}},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
