@@ -1,9 +1,5 @@
 package tetris
 
-import (
-	"math/rand"
-)
-
 const (
 	TC_EMPTY_STR     = " "
 	TC_BLOCK_STR     = "\u2588"
@@ -91,10 +87,4 @@ func MIN(x, y int) int {
 		return x
 	}
 	return y
-}
-
-// RandomTetrominoType returns a random tetromino type
-func RandomTetrominoType() int {
-	r := rand.Intn(NUM_TETROMINOS)
-	return r
 }

@@ -1,5 +1,7 @@
 package tetris
 
+import "math/rand"
+
 // A TetrisGame is the game object
 type TetrisGame struct {
 	// Game board
@@ -63,8 +65,9 @@ func (tg *TetrisGame) Remove(block TetrisBlock) {
 	}
 }
 
-// Fits determines whether this block can be placed on the board
-// (End of game if so?)
+// Fits determines whether this block can be placed on the board.  This
+// means that the block's row and column are in bounds and that the
+// board cell is not filled.
 func (tg *TetrisGame) Fits(block TetrisBlock) bool {
 	for i := 0; i < TETRIS; i++ {
 		cell := TETROMINOS[block.typ][block.ori][i]
@@ -78,4 +81,23 @@ func (tg *TetrisGame) Fits(block TetrisBlock) bool {
 		}
 	}
 	return true
+}
+
+// RandomTetrominoType returns a random tetromino type
+func RandomTetrominoType() TetrisType {
+	r := rand.Intn(NUM_TETROMINOS)
+	return TetrisType(r)
+}
+
+// NewFalling creates a new falling block and populate the next falling
+// block with a random one.
+func (tg *TetrisGame) NewFalling() {
+	// Move next to falling
+	tg.falling = tg.next
+
+	// Update next to a new tetromino
+	tg.next.typ = RandomTetrominoType()
+	tg.next.ori = 0
+	tg.next.loc.row = 0
+	tg.next.loc.col = tg.cols/2 - 2
 }
