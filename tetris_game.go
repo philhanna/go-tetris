@@ -224,3 +224,21 @@ func (tg *TetrisGame) Hold() {
 	}
 	tg.Put(tg.falling)
 }
+
+// HandleMove performs the action specified by the move
+func (tg *TetrisGame) HandleMove(move TetrisMove) {
+	switch move {
+	case TM_LEFT:
+		tg.Move(-1)
+	case TM_RIGHT:
+		tg.Move(1)
+	case TM_DROP:
+		tg.Down()
+	case TM_CLOCK:
+		tg.Rotate(1)
+	case TM_COUNTER:
+		tg.Rotate(-1)
+	case TM_HOLD:
+		tg.Hold()
+	}
+}
