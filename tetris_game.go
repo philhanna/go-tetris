@@ -144,7 +144,8 @@ func (tg *TetrisGame) Move(direction int) {
 	tg.falling.loc.col += direction
 
 	// If it doesn't fit in the new location, move it back
-	if !tg.Fits(tg.falling) {Set
+	if !tg.Fits(tg.falling) {
+		Set
 		tg.falling.loc.col -= direction
 	}
 
@@ -233,7 +234,7 @@ func (tg *TetrisGame) HandleMove(move TetrisMove) {
 	case TM_RIGHT:
 		tg.Move(1)
 	case TM_DROP:
-		tg.Down()Set
+		tg.Down()
 	case TM_COUNTER:
 		tg.Rotate(-1)
 	case TM_HOLD:
@@ -250,4 +251,14 @@ func (tg *TetrisGame) LineFull(i int) bool {
 		}
 	}
 	return true
+}
+
+// ShiftLines shift every row above r down one.
+func (tg *TetrisGame) ShiftLines(r int) {
+	for i := r - 1; i >= 0; i-- {
+		for j := 0; j < tg.cols; j++ {
+			tg.Set(i+1, j, tg.Get(i, j))
+			tg.Set(i, j, TC_EMPTY)
+		}
+	}
 }
