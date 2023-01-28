@@ -60,3 +60,23 @@ func TestTetrisGame_Put(t *testing.T) {
 		})
 	}
 }
+
+func TestTetrisGame_Remove(t *testing.T) {
+	type args struct {
+		block TetrisBlock
+	}
+	tests := []struct {
+		name   string
+		fields TetrisGame
+		args   args
+	}{
+		{"TET_J", *Create(22, 10), args{block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tg := Create(22, 10)
+			tg.Remove(tt.args.block)
+			dump("After Remove of TET_J", tg)
+		})
+	}
+}
