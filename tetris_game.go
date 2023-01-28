@@ -202,3 +202,25 @@ func (tg *TetrisGame) Rotate(direction int) {
 
 	tg.Put(tg.falling)
 }
+
+// Hold swaps the falling block with the block in the hold buffer.
+// TODO check on type == -1
+func (tg *TetrisGame) Hold() {
+
+	tg.Remove(tg.falling)
+	if tg.stored.typ == -1 {
+		tg.stored = tg.falling
+		tg.NewFalling()
+	} else {
+		typ := tg.falling.typ
+		ori := tg.falling.ori
+		tg.falling.typ = tg.stored.typ
+		tg.falling.ori = tg.stored.ori
+		tg.stored.typ = typ
+		tg.stored.ori = ori
+		for !tg.Fits(tg.falling) {
+			tg.falling.loc.row--
+		}
+	}
+	tg.Put(tg.falling)
+}
