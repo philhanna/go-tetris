@@ -5,13 +5,7 @@ import (
 )
 
 func setup() *TetrisGame {
-	tg := new(TetrisGame)
-	tg.rows = 20
-	tg.cols = 12
-	tg.board = make([]TetrisCell, tg.rows*tg.cols)
-	for i := 0; i < cap(tg.board); i++ {
-		tg.board[i] = TC_EMPTY
-	}
+	tg := Create(22, 10)
 	return tg
 }
 
