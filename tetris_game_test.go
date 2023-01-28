@@ -1,3 +1,4 @@
+// Unit tests for the TetrisGame class
 package tetris
 
 import (
@@ -5,11 +6,13 @@ import (
 	"testing"
 )
 
+// Internal function used to create a real game
 func setup() *TetrisGame {
 	tg := Create(22, 10)
 	return tg
 }
 
+// Dumps the game to the log
 func dump(label string, tg *TetrisGame) {
 	log.Printf("%s\n", label)
 	boardString := tg.Dump()
@@ -50,7 +53,13 @@ func TestTetrisGame_Put(t *testing.T) {
 		fields TetrisGame
 		args   args
 	}{
-		{"TET_J", *Create(22, 10), args{block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}}}},
+		{
+			name:   "TET_J",
+			fields: *Create(22, 10),
+			args: args{
+				block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -70,7 +79,11 @@ func TestTetrisGame_Remove(t *testing.T) {
 		fields TetrisGame
 		args   args
 	}{
-		{"TET_J", *Create(22, 10), args{block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}}}},
+		{
+			name:   "TET_J",
+			fields: *Create(22, 10),
+			args:   args{block: TetrisBlock{typ: TET_J, ori: 0, loc: TetrisLocation{4, 5}}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
