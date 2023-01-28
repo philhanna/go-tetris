@@ -36,3 +36,11 @@ func (tc TetrisCell) String() string {
 		return "?"
 	}
 }
+
+func (tc TetrisCell) IsEmpty() bool {
+	return tc == TC_EMPTY
+}
+
+func (tc TetrisCell) IsFilled() bool {
+	return tc != TC_EMPTY
+}

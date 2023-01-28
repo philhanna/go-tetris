@@ -75,18 +75,6 @@ var GRAVITY_LEVEL = []int{
 	30, 28, 26, 24, 22, 20, 16, 12, 8, 4,
 }
 
-func TYPE_TO_CELL(x int) int {
-	return x + 1
-}
-
-func TC_IS_EMPTY(x string) bool {
-	return x == TC_EMPTY_STR
-}
-
-func TC_IS_FILLED(x string) bool {
-	return !TC_IS_EMPTY(x)
-}
-
 func MAX(x, y int) int {
 	if x > y {
 		return x

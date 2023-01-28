@@ -62,3 +62,20 @@ func (tg *TetrisGame) Remove(block TetrisBlock) {
 		tg.Set(row, col, TC_EMPTY)
 	}
 }
+
+// Fits determines whether this block can be placed on the board
+// (End of game if so?)
+func (tg *TetrisGame) Fits(block TetrisBlock) bool {
+	for i := 0; i < TETRIS; i++ {
+		cell := TETROMINOS[block.typ][block.ori][i]
+		row := block.loc.row + cell.row
+		col := block.loc.col + cell.col
+		inBounds := tg.Check(row, col)
+		boardCell := tg.Get(row, col)
+		isFilled := boardCell.IsFilled()
+		if !inBounds || isFilled {
+			return false
+		}
+	}
+	return true
+}
