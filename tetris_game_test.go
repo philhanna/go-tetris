@@ -185,14 +185,22 @@ func TestTetrisGame_Move(t *testing.T) {
 		direction int
 	}
 	tests := []struct {
-		name   string
-		fields TetrisGame
-		args   args
+		name     string
+		fields   TetrisGame
+		args     args
+		colDelta int
 	}{
 		{
-			name:   "Move left",
-			fields: *Create(22, 10),
-			args:   args{direction: -1},
+			name:     "Move left",
+			fields:   *Create(22, 10),
+			args:     args{direction: -1},
+			colDelta: -1,
+		},
+		{
+			name:     "Move right",
+			fields:   *Create(22, 10),
+			args:     args{direction: 1},
+			colDelta: 1,
 		},
 	}
 	for _, tt := range tests {
@@ -212,11 +220,14 @@ func TestTetrisGame_Move(t *testing.T) {
 			before := tg.falling.loc
 			tg.Move(tt.args.direction)
 			after := tg.falling.loc
+
 			if before.row != after.row {
 				t.Errorf("Row was=%d, now=%d, should not have changed", before.row, before.col)
 			}
-			if after.col != before.col-1 {
-				t.Errorf("Col was %d, now %d, should be one less", before.col, after.col)
+			have := after.col
+			want := before.col + tt.colDelta
+			if have != want {
+				t.Errorf("have=%d,want=%d", have, want)
 			}
 		})
 	}
