@@ -172,6 +172,8 @@ func TestTetrisGame_DoGravityTick(t *testing.T) {
 				ticks_until_gravity: tt.fields.ticks_until_gravity,
 				linesRemaining:      tt.fields.linesRemaining,
 			}
+			tg.falling.loc.col = 11
+			tg.falling.loc.row = 19
 			tg.ticks_until_gravity = 0
 			tg.DoGravityTick()
 		})
