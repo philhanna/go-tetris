@@ -350,3 +350,22 @@ func (tg *TetrisGame) AdjustScore(linesCleared int) {
 		tg.linesRemaining -= linesCleared
 	}
 }
+
+// GameOver returns true if the game is over
+func (tg *TetrisGame) GameOver() bool {
+	over := false
+
+	tg.Remove(tg.falling)
+	for i := 0; i < 2; i++ {
+		for j := 0; j < tg.cols; j++ {
+			cell := tg.Get(i, j)
+			if cell.IsFilled() {
+				over = true
+				// TODO Can we put a break here?
+			}
+		}
+	}
+	tg.Put(tg.falling)
+
+	return over
+}
