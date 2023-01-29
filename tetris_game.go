@@ -47,6 +47,8 @@ func (tg *TetrisGame) Dump() string {
 		sb += cells
 		sb += "\n"
 	}
+	sb += fmt.Sprintf("falling: %s", tg.falling.String())
+	sb += "\n"
 	return sb
 }
 
@@ -126,9 +128,12 @@ func (tg *TetrisGame) Fits(block TetrisBlock) bool {
 		row := block.loc.row + cell.row
 		col := block.loc.col + cell.col
 		inBounds := tg.Check(row, col)
+		if !inBounds {
+			return false
+		}
 		boardCell := tg.Get(row, col)
 		isFilled := boardCell.IsFilled()
-		if !inBounds || isFilled {
+		if isFilled {
 			return false
 		}
 	}
