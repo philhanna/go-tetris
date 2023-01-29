@@ -179,3 +179,45 @@ func TestTetrisGame_DoGravityTick(t *testing.T) {
 		})
 	}
 }
+
+func TestTetrisGame_Move(t *testing.T) {
+	type args struct {
+		direction int
+	}
+	tests := []struct {
+		name   string
+		fields TetrisGame
+		args   args
+	}{
+		{
+			name:   "Move left",
+			fields: *Create(22, 10),
+			args:   args{direction: -1},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tg := &TetrisGame{
+				rows:                tt.fields.rows,
+				cols:                tt.fields.cols,
+				board:               tt.fields.board,
+				points:              tt.fields.points,
+				level:               tt.fields.level,
+				falling:             tt.fields.falling,
+				next:                tt.fields.next,
+				stored:              tt.fields.stored,
+				ticks_until_gravity: tt.fields.ticks_until_gravity,
+				linesRemaining:      tt.fields.linesRemaining,
+			}
+			before := tg.falling.loc
+			tg.Move(tt.args.direction)
+			after := tg.falling.loc
+			if before.row != after.row {
+				t.Errorf("Row was=%d, now=%d, should not have changed", before.row, before.col)
+			}
+			if after.col != before.col-1 {
+				t.Errorf("Col was %d, now %d, should be one less", before.col, after.col)
+			}
+		})
+	}
+}
