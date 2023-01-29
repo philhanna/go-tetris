@@ -369,3 +369,13 @@ func (tg *TetrisGame) GameOver() bool {
 
 	return over
 }
+
+// Tick does a single game tick: process gravity, user input, and score.
+// It returns true if the game is still running, false if it is over.
+func (tg *TetrisGame) Tick(move TetrisMove) bool {
+	tg.DoGravityTick()
+	tg.HandleMove(move)
+	linesCleared := tg.CheckLines()
+	tg.AdjustScore(linesCleared)
+	return !tg.GameOver()
+}
