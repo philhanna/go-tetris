@@ -232,3 +232,31 @@ func TestTetrisGame_Move(t *testing.T) {
 		})
 	}
 }
+
+func TestTetrisGame_Down(t *testing.T) {
+	tests := []struct {
+		name   string
+		fields TetrisGame
+	}{
+		{name: "Down", fields: *Create(22, 10)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tg := &TetrisGame{
+				rows:                tt.fields.rows,
+				cols:                tt.fields.cols,
+				board:               tt.fields.board,
+				points:              tt.fields.points,
+				level:               tt.fields.level,
+				falling:             tt.fields.falling,
+				next:                tt.fields.next,
+				stored:              tt.fields.stored,
+				ticks_until_gravity: tt.fields.ticks_until_gravity,
+				linesRemaining:      tt.fields.linesRemaining,
+			}
+			dump("Before down", tg)
+			tg.Down()
+			dump("After down", tg)
+		})
+	}
+}
