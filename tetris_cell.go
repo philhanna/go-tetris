@@ -1,6 +1,6 @@
 package tetris
 
-// TetrisCell is a 1x1 block within a tetris board.
+// TetrisCell is an enumeration of 1x1 blocks within a tetris board.
 type TetrisCell int
 
 const (
