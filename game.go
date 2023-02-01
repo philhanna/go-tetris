@@ -7,4 +7,21 @@ type TetrisGame struct {
 	rows  int
 	cols  int
 	board [][]TetrisCell
+
+	// Scoring information
+	points int
+	level  int
+
+	// Falling block is the one currently going down.
+	// Next block is the one that will be falling after this one.
+	// Stored is the block that you can swap out.
+	falling *TetrisBlock
+	next    *TetrisBlock
+	stored  *TetrisBlock
+
+	// Number of game ticks until the block will move down
+	ticksUntilGravity int
+
+	// Number of lines until you advance to the next level.
+	linesRemaining int
 }
