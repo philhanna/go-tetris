@@ -63,7 +63,7 @@ func TestTetrisGame_WithinBounds(t *testing.T) {
 		{"col way too far right", 1, nCols + 17, false},
 	}
 	for _, tt := range tests {
-		game := Create(nRows, nCols)
+		game := NewTetrisGame(nRows, nCols)
 		have, err := game.WithinBounds(tt.row, tt.col)
 		if have != tt.want {
 			t.Error(err)

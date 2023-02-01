@@ -21,17 +21,24 @@ type TetrisGame struct {
 	level  int
 
 	// Falling block is the one currently going down.
-	// Next block is the one that will be falling after this one.
+	// Next block is the one that will be fallingBlock after this one.
 	// Stored is the block that you can swap out.
-	falling *TetrisBlock
-	next    *TetrisBlock
-	stored  *TetrisBlock
+	fallingBlock *TetrisBlock
+	nextBlock    *TetrisBlock
+	storedBlock  *TetrisBlock
 
 	// Number of game ticks until the block will move down
 	ticksUntilGravity int
 
 	// Number of lines until you advance to the next level.
 	linesRemaining int
+}
+
+// NewTetrisGame is the constructor for a TetrisGame object
+func NewTetrisGame(nRows, nCols int) TetrisGame {
+	pGame := new(TetrisGame)
+	pGame.Init(nRows, nCols)
+	return *pGame
 }
 
 // String returns a string representation of the game object
@@ -63,9 +70,9 @@ func (pGame *TetrisGame) String() string {
 		}
 		return "<nil>"
 	}
-	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.falling)))
-	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.next)))
-	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.stored)))
+	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.fallingBlock)))
+	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.nextBlock)))
+	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.storedBlock)))
 	sb.WriteString(fmt.Sprintf("  ticksUntilGravity: %d\n", pGame.ticksUntilGravity))
 	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.linesRemaining))
 
@@ -102,8 +109,8 @@ func (pGame *TetrisGame) Init(nRows, nCols int) {
 	pGame.board = NewBoard(nRows, nCols)
 	pGame.points = 0
 	pGame.level = 0
-	pGame.next = nil
-	pGame.stored = nil
+	pGame.nextBlock = nil
+	pGame.storedBlock = nil
 	pGame.ticksUntilGravity = GRAVITY_LEVEL[0]
 	pGame.linesRemaining = LINES_PER_LEVEL
 
@@ -111,25 +118,17 @@ func (pGame *TetrisGame) Init(nRows, nCols int) {
 	// the first two random tetrominos
 	rand.Seed(time.Now().UnixNano())
 
-	// Now run NewFalling twice to initialize the falling and stored
+	// Now run MakeNewBlocks twice to initialize the falling and stored
 	// pointers
-
-	pGame.NewFalling()
-	pGame.NewFalling()
+	pGame.MakeNewBlocks()
+	pGame.MakeNewBlocks()
 }
 
-// NewFalling moves the next block to the falling block and creates a
+// MakeNewBlocks moves the next block to the falling block and creates a
 // new falling block
-func (pGame *TetrisGame) NewFalling() {
-	pGame.falling = pGame.next
-	pGame.next = RandomBlock(pGame.nCols)
-}
-
-// Create is the constructor for a TetrisGame object
-func Create(nRows, nCols int) TetrisGame {
-	pGame := new(TetrisGame)
-	pGame.Init(nRows, nCols)
-	return *pGame
+func (pGame *TetrisGame) MakeNewBlocks() {
+	pGame.fallingBlock = pGame.nextBlock
+	pGame.nextBlock = RandomBlock(pGame.nCols)
 }
 
 // WithinBounds returns an error if the specified row or column is

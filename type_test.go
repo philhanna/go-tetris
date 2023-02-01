@@ -15,7 +15,7 @@ func TestTetrisType_String(t *testing.T) {
 		{"S", TET_S, "S"},
 		{"T", TET_T, "T"},
 		{"Z", TET_Z, "Z"},
-		{"BOGUS", 86, ""},
+		{"BOGUS", 86, "?"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

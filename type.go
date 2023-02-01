@@ -2,7 +2,7 @@ package tetris
 
 // TetrisType is an enumeration of the type/shape of a tetromino, not
 // including orientation.
-type TetrisType uint8
+type TetrisType int8
 
 const (
 	TET_I TetrisType = iota
@@ -32,5 +32,5 @@ func (t TetrisType) String() string {
 	case TET_Z:
 		return "Z"
 	}
-	return ""
+	return "?"
 }
