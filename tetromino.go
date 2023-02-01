@@ -1,6 +1,8 @@
 package tetris
 
-import "fmt"
+import (
+	"math/rand"
+)
 
 // Tetrominio is an array of four tetris shapes, one for each of its
 // orientations.
@@ -44,6 +46,10 @@ var tetrominos = map[TetrisType]Tetromino{
 		{{0, 1}, {1, 0}, {1, 1}, {2, 0}}},
 }
 
-func dummy() {
-	fmt.Println(tetrominos)
+// RandomTetronimo returns a randomly chosen one of the tetronimos
+func RandomTetronimo() Tetromino {
+	i := rand.Intn(NUM_TETROMINOS)
+	keys := []TetrisType{TET_I, TET_J, TET_L, TET_O, TET_S, TET_T, TET_Z}
+	key := keys[i]
+	return tetrominos[key]
 }
