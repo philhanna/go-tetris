@@ -28,7 +28,7 @@ type TetrisGame struct {
 	storedBlock  *TetrisBlock
 
 	// Number of game ticks until the block will move down
-	ticksUntilGravity int
+	ticksRemaining int
 
 	// Number of lines until you advance to the next level.
 	linesRemaining int
@@ -73,7 +73,7 @@ func (pGame *TetrisGame) String() string {
 	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.fallingBlock)))
 	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.nextBlock)))
 	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.storedBlock)))
-	sb.WriteString(fmt.Sprintf("  ticksUntilGravity: %d\n", pGame.ticksUntilGravity))
+	sb.WriteString(fmt.Sprintf("  ticksRemaining: %d\n", pGame.ticksRemaining))
 	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.linesRemaining))
 
 	s := sb.String()
@@ -111,7 +111,7 @@ func (pGame *TetrisGame) Init(nRows, nCols int) {
 	pGame.level = 0
 	pGame.nextBlock = nil
 	pGame.storedBlock = nil
-	pGame.ticksUntilGravity = GRAVITY_LEVEL[0]
+	pGame.ticksRemaining = GRAVITY_LEVEL[0]
 	pGame.linesRemaining = LINES_PER_LEVEL
 
 	// Initialize the random number generator so that we can generate
@@ -125,7 +125,7 @@ func (pGame *TetrisGame) Init(nRows, nCols int) {
 }
 
 // MakeNewBlocks moves the next block to the falling block and creates a
-// new falling block
+// new randomly chosen block
 func (pGame *TetrisGame) MakeNewBlocks() {
 	pGame.fallingBlock = pGame.nextBlock
 	pGame.nextBlock = RandomBlock(pGame.nCols)
