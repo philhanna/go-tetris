@@ -6,7 +6,7 @@ package tetris
 
 // TetrisType is an enumeration of the type/shape of a tetromino, not
 // including orientation.
-type TetrisType int
+type TetrisType uint8
 
 const (
 	TET_I TetrisType = iota
@@ -19,7 +19,7 @@ const (
 )
 
 // TetrisCell is an enumeration of 1x1 blocks within a tetris board.
-type TetrisCell int
+type TetrisCell uint8
 
 const (
 	TC_EMPTY TetrisCell = iota
@@ -34,7 +34,7 @@ const (
 
 // TetrisMove is an enumeration of all possible moves to give as input
 // to the game
-type TetrisMove int
+type TetrisMove uint8
 
 const (
 	TM_LEFT TetrisMove = iota
