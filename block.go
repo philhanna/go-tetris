@@ -1,6 +1,9 @@
 package tetris
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+)
 
 // TetrisBlock is a struct that contains information about a tetromino.
 // Specifically, what type it is, what orientation it has, and where it
@@ -11,17 +14,28 @@ type TetrisBlock struct {
 	location    TetrisLocation
 }
 
+// String returns a string representation of a TetrisBlock
+func (pBlock *TetrisBlock) String() string {
+	blockTypeStr := pBlock.blockType.String()
+	orientation := pBlock.orientation
+	locationStr := pBlock.location.String()
+	s := fmt.Sprintf("(%q,%d,%s", blockTypeStr, orientation, locationStr)
+	return s
+}
+
+// Returns allocates memory for a new TetrisBlock chosen at random and
+// returns a pointer to it.
 func RandomBlock(cols int) *TetrisBlock {
 
-	p := new(TetrisBlock)
+	pBlock := new(TetrisBlock)
 
 	tetrisTypes := []TetrisType{TET_I, TET_J, TET_L, TET_O, TET_S, TET_T, TET_Z}
 	i := rand.Intn(len(tetrisTypes))
 
-	p.blockType = tetrisTypes[i]
-	p.orientation = 0
-	p.location.row = 0
-	p.location.col = cols/2 - 2
+	pBlock.blockType = tetrisTypes[i]
+	pBlock.orientation = 0
+	pBlock.location.row = 0
+	pBlock.location.col = cols/2 - 2
 
-	return p
+	return pBlock
 }

@@ -1,7 +1,9 @@
 package tetris
 
 import (
+	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -29,6 +31,36 @@ type TetrisGame struct {
 
 	// Number of lines until you advance to the next level.
 	linesRemaining int
+}
+
+// String returns a string representation of the game object
+func (pGame *TetrisGame) String() string {
+
+	var sb strings.Builder
+
+	sb.WriteString("Game:\n")
+	sb.WriteString(fmt.Sprintf("  rows: %d, cols: %d\n", pGame.rows, pGame.cols))
+	sb.WriteString("  board: {\n")
+	for _, cells := range pGame.board {
+		sb.WriteString("    {")
+		for _, cell := range cells {
+			sb.WriteString(cell.String())
+		}
+		sb.WriteString("},\n")
+	}
+	sb.WriteString("  }\n")
+	sb.WriteString(fmt.Sprintf("  points: %d, level: %d\n",
+		pGame.points,
+		pGame.level))
+	sb.WriteString(fmt.Sprintf("  falling: %s\n", pGame.falling.String()))
+	sb.WriteString(fmt.Sprintf("  next:    %s\n", pGame.next.String()))
+	sb.WriteString(fmt.Sprintf("  stored:  %s\n", pGame.stored.String()))
+	sb.WriteString(fmt.Sprintf("  ticksUntilGravity: %d, linesRemaining: %d",
+		pGame.ticksUntilGravity,
+		pGame.linesRemaining))
+
+	s := sb.String()
+	return s
 }
 
 // Init initializes the data in a TetrisGame object

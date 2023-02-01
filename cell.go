@@ -13,3 +13,27 @@ const (
 	TC_CELLT
 	TC_CELLZ
 )
+
+// String returns a string representation of a TetrisCell
+func (c TetrisCell) String() string {
+	switch c {
+	case TC_EMPTY:
+		return " "
+	case TC_CELLI:
+		return "I"
+	case TC_CELLJ:
+		return "J"
+	case TC_CELLL:
+		return "L"
+	case TC_CELLO:
+		return "O"
+	case TC_CELLS:
+		return "S"
+	case TC_CELLT:
+		return "T"
+	case TC_CELLZ:
+		return "Z"
+	default:
+		return "?"
+	}
+}
