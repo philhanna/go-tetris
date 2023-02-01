@@ -8,6 +8,7 @@ import (
 // orientations.
 type Tetromino [NUM_ORIENTATIONS][NUM_CELLS]TetrisLocation
 
+// Declare the seven fixed tetrominos
 var Tetrominos = map[TetrisType]Tetromino{
 	TET_I: {
 		{{1, 0}, {1, 1}, {1, 2}, {1, 3}},
