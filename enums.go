@@ -18,6 +18,27 @@ const (
 	TET_Z
 )
 
+// String returns a string representation of a tetris type
+func (t TetrisType) String() string {
+	switch t {
+	case TET_I:
+		return "I"
+	case TET_J:
+		return "J"
+	case TET_L:
+		return "L"
+	case TET_O:
+		return "O"
+	case TET_S:
+		return "S"
+	case TET_T:
+		return "T"
+	case TET_Z:
+		return "Z"
+	}
+	return ""
+}
+
 // TetrisCell is an enumeration of 1x1 blocks within a tetris board.
 type TetrisCell uint8
 
