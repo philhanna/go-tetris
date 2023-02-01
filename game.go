@@ -39,7 +39,8 @@ func (pGame *TetrisGame) String() string {
 	var sb strings.Builder
 
 	sb.WriteString("Game:\n")
-	sb.WriteString(fmt.Sprintf("  rows: %d, cols: %d\n", pGame.rows, pGame.cols))
+	sb.WriteString(fmt.Sprintf("  rows: %d\n", pGame.rows))
+	sb.WriteString(fmt.Sprintf("  cols: %d\n", pGame.cols))
 	sb.WriteString("  board: {\n")
 	for _, cells := range pGame.board {
 		sb.WriteString("    {")
@@ -49,15 +50,20 @@ func (pGame *TetrisGame) String() string {
 		sb.WriteString("},\n")
 	}
 	sb.WriteString("  }\n")
-	sb.WriteString(fmt.Sprintf("  points: %d, level: %d\n",
-		pGame.points,
-		pGame.level))
-	sb.WriteString(fmt.Sprintf("  falling: %s\n", pGame.falling.String()))
-	sb.WriteString(fmt.Sprintf("  next:    %s\n", pGame.next.String()))
-	sb.WriteString(fmt.Sprintf("  stored:  %s\n", pGame.stored.String()))
-	sb.WriteString(fmt.Sprintf("  ticksUntilGravity: %d, linesRemaining: %d",
-		pGame.ticksUntilGravity,
-		pGame.linesRemaining))
+	sb.WriteString(fmt.Sprintf("  points: %d\n", pGame.points))
+	sb.WriteString(fmt.Sprintf("  level: %d\n", pGame.level))
+
+	blockString := func(p *TetrisBlock) string {
+		if p != nil {
+			return p.String()
+		}
+		return "<nil>"
+	}
+	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.falling)))
+	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.next)))
+	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.stored)))
+	sb.WriteString(fmt.Sprintf("  ticksUntilGravity: %d\n", pGame.ticksUntilGravity))
+	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.linesRemaining))
 
 	s := sb.String()
 	return s
