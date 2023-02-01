@@ -1,6 +1,7 @@
 package tetris
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -11,8 +12,8 @@ import (
 // of play
 type TetrisGame struct {
 	// Dimensions and contents of the board
-	rows  int
-	cols  int
+	nRows int
+	nCols int
 	board [][]TetrisCell
 
 	// Scoring information
@@ -39,9 +40,10 @@ func (pGame *TetrisGame) String() string {
 	var sb strings.Builder
 
 	sb.WriteString("Game:\n")
-	sb.WriteString(fmt.Sprintf("  rows: %d\n", pGame.rows))
-	sb.WriteString(fmt.Sprintf("  cols: %d\n", pGame.cols))
+	sb.WriteString(fmt.Sprintf("  nRows: %d\n", pGame.nRows))
+	sb.WriteString(fmt.Sprintf("  nCols: %d\n", pGame.nCols))
 	sb.WriteString("  board: {\n")
+
 	// Write each row
 	for _, cells := range pGame.board {
 		sb.WriteString("    {")
@@ -49,7 +51,7 @@ func (pGame *TetrisGame) String() string {
 		for _, cell := range cells {
 			sb.WriteString(cell.String())
 		}
-		sb.WriteString("},\n")
+		sb.WriteString("}\n")
 	}
 	sb.WriteString("  }\n")
 	sb.WriteString(fmt.Sprintf("  points: %d\n", pGame.points))
@@ -71,13 +73,33 @@ func (pGame *TetrisGame) String() string {
 	return s
 }
 
+// NewBoard allocates memory for a rows*cols board.
+func NewBoard(nRows, nCols int) [][]TetrisCell {
+
+	// Define the board as a slice of slices of TetrisCells
+	board := make([][]TetrisCell, nRows)
+
+	// Outer loop creates a row at a time
+	for row := range board {
+		board[row] = make([]TetrisCell, nCols)
+	}
+
+	// Initialize all cells to empty
+	for row := 0; row < nRows; row++ {
+		for col := 0; col < nCols; col++ {
+			board[row][col] = TC_EMPTY
+		}
+	}
+	return board
+}
+
 // Init initializes the data in a TetrisGame object
-func (pGame *TetrisGame) Init(rows, cols int) {
+func (pGame *TetrisGame) Init(nRows, nCols int) {
 
 	// Initialize the boilerplate fields
-	pGame.rows = rows
-	pGame.cols = cols
-	pGame.board = make([][]TetrisCell, 0)
+	pGame.nRows = nRows
+	pGame.nCols = nCols
+	pGame.board = NewBoard(nRows, nCols)
 	pGame.points = 0
 	pGame.level = 0
 	pGame.next = nil
@@ -100,22 +122,44 @@ func (pGame *TetrisGame) Init(rows, cols int) {
 // new falling block
 func (pGame *TetrisGame) NewFalling() {
 	pGame.falling = pGame.next
-	pGame.next = RandomBlock(pGame.cols)
+	pGame.next = RandomBlock(pGame.nCols)
 }
 
 // Create is the constructor for a TetrisGame object
-func Create(rows, cols int) TetrisGame {
+func Create(nRows, nCols int) TetrisGame {
 	pGame := new(TetrisGame)
-	pGame.Init(rows, cols)
+	pGame.Init(nRows, nCols)
 	return *pGame
 }
 
+// WithinBounds returns an error if the specified row or column is
+// contained in the board
+func (g TetrisGame) WithinBounds(row, col int) (bool, error) {
+	switch {
+	case row < 0, row >= g.nRows:
+		errmsg := fmt.Sprintf("row %d is not >= %d and < %d", row, 0, g.nRows)
+		return false, errors.New(errmsg)
+	case col < 0, col >= g.nCols:
+		errmsg := fmt.Sprintf("col %d is not >= %d and < %d", col, 0, g.nCols)
+		return false, errors.New(errmsg)
+	default:
+		return true, nil
+	}
+}
+
 // Get returns the cell at the given row and column.
-func (g TetrisGame) Get(row, col int) TetrisCell {
-	return g.board[row][col]
+func (g TetrisGame) Get(row, col int) (TetrisCell, error) {
+	if ok, err := g.WithinBounds(row, col); !ok {
+		return TC_EMPTY, err
+	}
+	return g.board[row][col], nil
 }
 
 // Set sets the cell at the given row and column.
-func (g TetrisGame) Set(row, col int, value TetrisCell) {
+func (g TetrisGame) Set(row, col int, value TetrisCell) error {
+	if _, err := g.WithinBounds(row, col); err != nil {
+		return err
+	}
 	g.board[row][col] = value
+	return nil
 }

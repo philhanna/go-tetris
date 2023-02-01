@@ -18,7 +18,7 @@ const (
 func (c TetrisCell) String() string {
 	switch c {
 	case TC_EMPTY:
-		return " "
+		return "."
 	case TC_CELLI:
 		return "I"
 	case TC_CELLJ:
