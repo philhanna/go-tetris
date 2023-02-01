@@ -1,10 +1,11 @@
 package tetris
 
 // Tetrominio is an array of four tetris shapes, one for each of its
-// orientations.
+// orientations. Each shape is a 4x4 matrix of locations that are
+// populated with visible cells
 type Tetromino [NUM_ORIENTATIONS][NUM_CELLS]TetrisLocation
 
-// Declare the seven fixed tetrominos
+// The seven fixed tetrominos
 var Tetrominos = map[TetrisType]Tetromino{
 	TET_I: {
 		{{1, 0}, {1, 1}, {1, 2}, {1, 3}},
