@@ -1,9 +1,5 @@
 package tetris
 
-import (
-	"math/rand"
-)
-
 // Tetrominio is an array of four tetris shapes, one for each of its
 // orientations.
 type Tetromino [NUM_ORIENTATIONS][NUM_CELLS]TetrisLocation
@@ -45,12 +41,4 @@ var Tetrominos = map[TetrisType]Tetromino{
 		{{0, 2}, {1, 1}, {1, 2}, {2, 1}},
 		{{1, 0}, {1, 1}, {2, 1}, {2, 2}},
 		{{0, 1}, {1, 0}, {1, 1}, {2, 0}}},
-}
-
-// RandomTetronimo returns a randomly chosen one of the tetrominos
-func RandomTetronimo() Tetromino {
-	i := rand.Intn(NUM_TETROMINOS)
-	keys := []TetrisType{TET_I, TET_J, TET_L, TET_O, TET_S, TET_T, TET_Z}
-	key := keys[i]
-	return Tetrominos[key]
 }
