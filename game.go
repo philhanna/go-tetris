@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// TetrisGame is a class that holds all the information about the
-// state of play
+// TetrisGame is a class that holds all the information about the state
+// of play
 type TetrisGame struct {
 	// Dimensions and contents of the board
 	rows  int
@@ -40,15 +40,27 @@ func (pGame *TetrisGame) Init(rows, cols int) {
 	pGame.board = make([][]TetrisCell, 0)
 	pGame.points = 0
 	pGame.level = 0
-	pGame.falling = nil
 	pGame.next = nil
 	pGame.stored = nil
-	pGame.ticksUntilGravity = GRAVITY_LEVEL[pGame.level]
+	pGame.ticksUntilGravity = GRAVITY_LEVEL[0]
+	pGame.linesRemaining = LINES_PER_LEVEL
 
 	// Initialize the random number generator so that we can generate
 	// the first two random tetrominos
 	rand.Seed(time.Now().UnixNano())
 
+	// Now run NewFalling twice to initialize the falling and stored
+	// pointers
+
+	pGame.NewFalling()
+	pGame.NewFalling()
+}
+
+// NewFalling moves the next block to the falling block and creates a
+// new falling block
+func (pGame *TetrisGame) NewFalling() {
+	pGame.falling = pGame.next
+	pGame.next = RandomBlock(pGame.cols)
 }
 
 // Create is the constructor for a TetrisGame object
