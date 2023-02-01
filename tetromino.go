@@ -8,7 +8,7 @@ import (
 // orientations.
 type Tetromino [NUM_ORIENTATIONS][NUM_CELLS]TetrisLocation
 
-var tetrominos = map[TetrisType]Tetromino{
+var Tetrominos = map[TetrisType]Tetromino{
 	TET_I: {
 		{{1, 0}, {1, 1}, {1, 2}, {1, 3}},
 		{{0, 2}, {1, 2}, {2, 2}, {3, 2}},
@@ -46,10 +46,10 @@ var tetrominos = map[TetrisType]Tetromino{
 		{{0, 1}, {1, 0}, {1, 1}, {2, 0}}},
 }
 
-// RandomTetronimo returns a randomly chosen one of the tetronimos
+// RandomTetronimo returns a randomly chosen one of the tetrominos
 func RandomTetronimo() Tetromino {
 	i := rand.Intn(NUM_TETROMINOS)
 	keys := []TetrisType{TET_I, TET_J, TET_L, TET_O, TET_S, TET_T, TET_Z}
 	key := keys[i]
-	return tetrominos[key]
+	return Tetrominos[key]
 }
