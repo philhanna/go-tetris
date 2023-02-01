@@ -15,9 +15,9 @@ type TetrisGame struct {
 	// Falling block is the one currently going down.
 	// Next block is the one that will be falling after this one.
 	// Stored is the block that you can swap out.
-	falling TetrisBlock
-	next    TetrisBlock
-	stored  TetrisBlock
+	falling *TetrisBlock
+	next    *TetrisBlock
+	stored  *TetrisBlock
 
 	// Number of game ticks until the block will move down
 	ticksUntilGravity int
