@@ -23,7 +23,8 @@ func getTestGame(nRows, nCols int) *TetrisGame {
 	return &pGame
 }
 
-func TestTetrisGame_String(t *testing.T) {
+func TestTetrisPrintGame_String(t *testing.T) {
+	t.Skip("Only for debugging")
 	pGame := getTestGame(4, 12)
 	fmt.Println(pGame.String())
 }
