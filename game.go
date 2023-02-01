@@ -25,3 +25,8 @@ type TetrisGame struct {
 	// Number of lines until you advance to the next level.
 	linesRemaining int
 }
+
+// Get returns the cell at the given row and column.
+func (g TetrisGame) Get(row, col int) TetrisCell {
+	return g.board[row][col]
+}
