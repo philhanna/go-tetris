@@ -42,8 +42,10 @@ func (pGame *TetrisGame) String() string {
 	sb.WriteString(fmt.Sprintf("  rows: %d\n", pGame.rows))
 	sb.WriteString(fmt.Sprintf("  cols: %d\n", pGame.cols))
 	sb.WriteString("  board: {\n")
+	// Write each row
 	for _, cells := range pGame.board {
 		sb.WriteString("    {")
+		// Write each column in this row
 		for _, cell := range cells {
 			sb.WriteString(cell.String())
 		}
@@ -111,4 +113,9 @@ func Create(rows, cols int) TetrisGame {
 // Get returns the cell at the given row and column.
 func (g TetrisGame) Get(row, col int) TetrisCell {
 	return g.board[row][col]
+}
+
+// Set sets the cell at the given row and column.
+func (g TetrisGame) Set(row, col int, value TetrisCell) {
+	g.board[row][col] = value
 }
