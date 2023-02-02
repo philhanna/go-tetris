@@ -59,8 +59,24 @@ func (pGame *TetrisGame) DoGravityTick() {
 	}
 }
 
+// Checks whether a block can be placed on the board
 func (pGame *TetrisGame) Fits(block *TetrisBlock) bool {
-	// TODO implement me
+	for i := 0; i < NUM_CELLS; i++ {
+		location := Tetrominos[block.blockType][block.orientation][i]
+		row := block.location.row + location.row
+		col := block.location.col + location.col
+
+		// If the new location is outside the board, no fit.
+		if ok, _ := pGame.WithinBounds(row, col); !ok {
+			return false
+		}
+
+		// If the cell at the new location is not empty, no fit
+		newCell, _ := pGame.Get(row, col)
+		if newCell != TC_EMPTY {
+			return false
+		}
+	}
 	return true
 }
 
