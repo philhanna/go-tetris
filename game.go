@@ -152,12 +152,57 @@ func NewBoard(nRows, nCols int) [][]TetrisCell {
 	return board
 }
 
+// Put places a block onto the board
 func (pGame *TetrisGame) Put(block *TetrisBlock) {
-	pGame.Put(pGame.fallingBlock)
+	for i := 0; i < NUM_CELLS; i++ {
+		location := Tetrominos[block.blockType][block.orientation][i]
+		newRow := block.location.row + location.row
+		newCol := block.location.col + location.col
+		pGame.Set(newRow, newCol, TC_EMPTY)
+	}
 }
 
+// Clears a block off the board
 func (pGame *TetrisGame) Remove(block *TetrisBlock) {
-	// TODO implement me
+	for i := 0; i < NUM_CELLS; i++ {
+		location := Tetrominos[block.blockType][block.orientation][i]
+		newRow := block.location.row + location.row
+		newCol := block.location.col + location.col
+		pGame.Set(newRow, newCol, TypeToCell(block.blockType))
+	}
+}
+
+// Rotate rotates the falling block in either direction (+/-1), given
+// that it fits
+func (pGame *TetrisGame) Rotate(direction int) {
+	pGame.Remove(pGame.fallingBlock)
+	for {
+		pGame.fallingBlock.orientation =
+			(pGame.fallingBlock.orientation + direction) % NUM_ORIENTATIONS
+
+		// If the new orientation fits, we're done
+		if pGame.Fits(pGame.fallingBlock) {
+			break
+		}
+
+		// Otherwise, try moving it to the left to make it fit
+		pGame.fallingBlock.location.col--
+		if pGame.Fits(pGame.fallingBlock) {
+			break
+		}
+
+		// Finally, try moving it to the right to make it fit
+		pGame.fallingBlock.location.col += 2
+		if pGame.Fits(pGame.fallingBlock) {
+			break
+		}
+
+		// Put it back in its original location and try the next
+		// orientation. Worst case, we come back to the original
+		// orientation and it fits, so this loop will terminate
+		pGame.fallingBlock.location.col--
+	}
+	pGame.Put(pGame.fallingBlock)
 }
 
 // Set sets the cell at the given row and column.
@@ -227,6 +272,28 @@ func (pGame *TetrisGame) Tick(move TetrisMove) bool {
 
 	return !gameOver
 
+}
+
+// Converts a TetrisType to a TetrisCell
+func TypeToCell(typ TetrisType) TetrisCell {
+	switch typ {
+	case TET_I:
+		return TC_CELLI
+	case TET_J:
+		return TC_CELLJ
+	case TET_L:
+		return TC_CELLL
+	case TET_O:
+		return TC_CELLO
+	case TET_S:
+		return TC_CELLS
+	case TET_T:
+		return TC_CELLT
+	case TET_Z:
+		return TC_CELLZ
+	default:
+		return TC_EMPTY
+	}
 }
 
 // WithinBounds returns an error if the specified row or column is
