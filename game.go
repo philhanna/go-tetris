@@ -41,6 +41,18 @@ func NewTetrisGame(nRows, nCols int) TetrisGame {
 	return *pGame
 }
 
+// Adjust the score for the game, given how many lines were just cleared.
+func (pGame *TetrisGame) AdjustScore(linesCleared int) {
+	// lineMultiplier := []int{0, 40, 100, 300, 1200}
+	// TODO finish me
+}
+
+// linesCleared := pGame.CheckLines()
+func (pGame *TetrisGame) CheckLines() int {
+	// TODO implement me
+	return 0
+}
+
 // DoGravityTick does a single game tick: process gravity, user input,
 // and score.  Return true if the game is still running, false if it is
 // over.
@@ -57,6 +69,10 @@ func (pGame *TetrisGame) DoGravityTick() {
 		}
 		pGame.Put(pGame.fallingBlock)
 	}
+}
+
+func (pGame *TetrisGame) Down() {
+	// TODO implement me
 }
 
 // Checks whether a block can be placed on the board
@@ -80,6 +96,12 @@ func (pGame *TetrisGame) Fits(block *TetrisBlock) bool {
 	return true
 }
 
+// Returns true if the game is over
+func (pGame *TetrisGame) GameOver() bool {
+	// TODO implement me
+	return false
+}
+
 // Get returns the cell at the given row and column.
 func (pGame *TetrisGame) Get(row, col int) (TetrisCell, error) {
 	if ok, err := pGame.WithinBounds(row, col); !ok {
@@ -101,9 +123,13 @@ func (pGame *TetrisGame) HandleMove(move TetrisMove) {
 		pGame.Rotate(1)
 	case TM_COUNTER:
 		pGame.Rotate(-1)
-	case TM_HOME:
+	case TM_HOLD:
 		pGame.Hold()
 	}
+}
+
+func (pGame *TetrisGame) Hold() {
+	// TODO implement me
 }
 
 // Init initializes the data in a TetrisGame object
