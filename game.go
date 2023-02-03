@@ -138,8 +138,22 @@ func (pGame *TetrisGame) Fits(block *TetrisBlock) bool {
 
 // Returns true if the game is over
 func (pGame *TetrisGame) GameOver() bool {
-	// TODO implement me
-	return false
+
+	// Save and restore falling block at the end of this method.
+	pGame.Remove(pGame.fallingBlock)
+	over := false
+
+	// If the top two rows are not clear, the game is over
+	for i := 0; i < 2; i++ {
+		for j := 0; j < pGame.nCols; j++ {
+			cell := pGame.Get(i, j)
+			if cell != TC_EMPTY {
+				over = true
+			}
+		}
+	}
+	pGame.Put(pGame.fallingBlock)
+	return over
 }
 
 // Get returns the cell at the given row and column.
@@ -168,8 +182,16 @@ func (pGame *TetrisGame) HandleMove(move TetrisMove) {
 	}
 }
 
+// Swap the falling block with the block in the hold buffer.
 func (pGame *TetrisGame) Hold() {
-	// TODO implement me
+	pGame.Remove(pGame.fallingBlock)
+	// TODO finish me
+	if pGame.storedBlock == nil {
+		pGame.storedBlock = pGame.fallingBlock
+	} else {
+
+	}
+	pGame.Put(pGame.fallingBlock)
 }
 
 // Init initializes the data in a TetrisGame object
