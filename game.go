@@ -302,7 +302,6 @@ func (pGame *TetrisGame) Set(row, col int, value TetrisCell) error {
 
 // Shift every row above r down one
 func (pGame *TetrisGame) ShiftLines(r int) {
-	// TODO finish me
 	for i := r - 1; i >= 0; i-- {
 		for j := 0; j < pGame.nCols; j++ {
 			cell := pGame.Get(i, j)
