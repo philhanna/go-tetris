@@ -13,7 +13,7 @@ const (
 
 // Main tetris game
 func main() {
-	var tg tetris.TetrisGame
+	var tg tetris.Game
 
 	// Dummy usage of unused variables
 	fmt.Println(tg)

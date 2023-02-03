@@ -1,11 +1,11 @@
 package tetris
 
-// TetrisType is an enumeration of the type/shape of a tetromino, not
+// Type is an enumeration of the type/shape of a tetromino, not
 // including orientation.
-type TetrisType int8
+type Type int8
 
 const (
-	TET_I TetrisType = iota
+	TET_I Type = iota
 	TET_J
 	TET_L
 	TET_O
@@ -15,7 +15,7 @@ const (
 )
 
 // String returns a string representation of a tetris type
-func (t TetrisType) String() string {
+func (t Type) String() string {
 	switch t {
 	case TET_I:
 		return "I"

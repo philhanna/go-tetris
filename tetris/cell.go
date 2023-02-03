@@ -1,10 +1,10 @@
 package tetris
 
-// TetrisCell is an enumeration of 1x1 blocks within a tetris board.
-type TetrisCell uint8
+// Cell is an enumeration of 1x1 blocks within a tetris board.
+type Cell uint8
 
 const (
-	TC_EMPTY TetrisCell = iota
+	TC_EMPTY Cell = iota
 	TC_CELLI
 	TC_CELLJ
 	TC_CELLL
@@ -14,8 +14,8 @@ const (
 	TC_CELLZ
 )
 
-// String returns a string representation of a TetrisCell
-func (c TetrisCell) String() string {
+// String returns a string representation of a Cell
+func (c Cell) String() string {
 	switch c {
 	case TC_EMPTY:
 		return "."

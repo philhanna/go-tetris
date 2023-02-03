@@ -8,13 +8,13 @@ import (
 	"time"
 )
 
-// TetrisGame is a class that holds all the information about the state
+// Game is a class that holds all the information about the state
 // of play
-type TetrisGame struct {
+type Game struct {
 	// Dimensions and contents of the board
 	nRows int
 	nCols int
-	board [][]TetrisCell
+	board [][]Cell
 
 	// Scoring information
 	points int
@@ -23,9 +23,9 @@ type TetrisGame struct {
 	// Falling block is the one currently going down.
 	// Next block is the one that will be fallingBlock after this one.
 	// Stored is the block that you can swap out.
-	fallingBlock *TetrisBlock
-	nextBlock    *TetrisBlock
-	storedBlock  *TetrisBlock
+	fallingBlock *Block
+	nextBlock    *Block
+	storedBlock  *Block
 
 	// Number of game ticks until the block will move down
 	ticksRemaining int
@@ -34,15 +34,15 @@ type TetrisGame struct {
 	linesRemaining int
 }
 
-// NewTetrisGame is the constructor for a TetrisGame object
-func NewTetrisGame(nRows, nCols int) TetrisGame {
-	pGame := new(TetrisGame)
+// NewGame is the constructor for a Game object
+func NewGame(nRows, nCols int) Game {
+	pGame := new(Game)
 	pGame.Init(nRows, nCols)
 	return *pGame
 }
 
 // Adjust the score for the game, given how many lines were just cleared.
-func (pGame *TetrisGame) AdjustScore(linesCleared int) {
+func (pGame *Game) AdjustScore(linesCleared int) {
 	// Note: the array is limited to a maximum of four lines cleared,
 	// which seems OK because that is as big as a tetromino can get
 	lineMultiplier := []int{0, 40, 100, 300, 1200}
@@ -65,7 +65,7 @@ func (pGame *TetrisGame) AdjustScore(linesCleared int) {
 
 // Find rows that are filled, remove them, shift, and return the number
 // of cleared rows.
-func (pGame *TetrisGame) CheckLines() int {
+func (pGame *Game) CheckLines() int {
 
 	// Save and restore the falling block
 	pGame.Remove(pGame.fallingBlock)
@@ -89,7 +89,7 @@ func (pGame *TetrisGame) CheckLines() int {
 // DoGravityTick does a single game tick: process gravity, user input,
 // and score.  Return true if the game is still running, false if it is
 // over.
-func (pGame *TetrisGame) DoGravityTick() {
+func (pGame *Game) DoGravityTick() {
 	pGame.ticksRemaining--
 	if pGame.ticksRemaining <= 0 {
 		pGame.Remove(pGame.fallingBlock)
@@ -105,7 +105,7 @@ func (pGame *TetrisGame) DoGravityTick() {
 }
 
 // Send the falling tetris block to the bottom.
-func (pGame *TetrisGame) Down() {
+func (pGame *Game) Down() {
 	pGame.Remove(pGame.fallingBlock)
 	for pGame.Fits(pGame.fallingBlock) {
 		pGame.fallingBlock.location.row++
@@ -116,7 +116,7 @@ func (pGame *TetrisGame) Down() {
 }
 
 // Checks whether a block can be placed on the board
-func (pGame *TetrisGame) Fits(block *TetrisBlock) bool {
+func (pGame *Game) Fits(block *Block) bool {
 	for i := 0; i < NUM_CELLS; i++ {
 		location := Tetrominos[block.blockType][block.orientation][i]
 		row := block.location.row + location.row
@@ -137,7 +137,7 @@ func (pGame *TetrisGame) Fits(block *TetrisBlock) bool {
 }
 
 // Returns true if the game is over
-func (pGame *TetrisGame) GameOver() bool {
+func (pGame *Game) GameOver() bool {
 
 	// Save and restore falling block at the end of this method.
 	pGame.Remove(pGame.fallingBlock)
@@ -157,7 +157,7 @@ func (pGame *TetrisGame) GameOver() bool {
 }
 
 // Get returns the cell at the given row and column.
-func (pGame *TetrisGame) Get(row, col int) TetrisCell {
+func (pGame *Game) Get(row, col int) Cell {
 	if ok, _ := pGame.WithinBounds(row, col); !ok {
 		return TC_EMPTY
 	}
@@ -165,7 +165,7 @@ func (pGame *TetrisGame) Get(row, col int) TetrisCell {
 }
 
 // HandleMove performs the action specified by the move.
-func (pGame *TetrisGame) HandleMove(move TetrisMove) {
+func (pGame *Game) HandleMove(move Move) {
 	switch move {
 	case TM_LEFT:
 		pGame.Move(-1)
@@ -183,7 +183,7 @@ func (pGame *TetrisGame) HandleMove(move TetrisMove) {
 }
 
 // Swap the falling block with the block in the hold buffer.
-func (pGame *TetrisGame) Hold() {
+func (pGame *Game) Hold() {
 	pGame.Remove(pGame.fallingBlock)
 	if pGame.storedBlock == nil {
 
@@ -209,8 +209,8 @@ func (pGame *TetrisGame) Hold() {
 	pGame.Put(pGame.fallingBlock)
 }
 
-// Init initializes the data in a TetrisGame object
-func (pGame *TetrisGame) Init(nRows, nCols int) {
+// Init initializes the data in a Game object
+func (pGame *Game) Init(nRows, nCols int) {
 
 	// Initialize the boilerplate fields
 	pGame.nRows = nRows
@@ -234,7 +234,7 @@ func (pGame *TetrisGame) Init(nRows, nCols int) {
 }
 
 // Returns true if line i is full
-func (pGame *TetrisGame) LineFull(i int) bool {
+func (pGame *Game) LineFull(i int) bool {
 	for j := 0; j < pGame.nCols; j++ {
 		cell := pGame.Get(i, j)
 		if cell == TC_EMPTY {
@@ -246,14 +246,14 @@ func (pGame *TetrisGame) LineFull(i int) bool {
 
 // MakeNewBlocks moves the next block to the falling block and creates a
 // new randomly chosen block
-func (pGame *TetrisGame) MakeNewBlocks() {
+func (pGame *Game) MakeNewBlocks() {
 	pGame.fallingBlock = pGame.nextBlock
 	pGame.nextBlock = RandomBlock(pGame.nCols)
 }
 
 // Move moves the falling tetris block left (-1) or right (+1), given
 // that it fits
-func (pGame *TetrisGame) Move(direction int) {
+func (pGame *Game) Move(direction int) {
 	pGame.Remove(pGame.fallingBlock)
 	pGame.fallingBlock.location.col += direction
 	if !pGame.Fits(pGame.fallingBlock) {
@@ -263,14 +263,14 @@ func (pGame *TetrisGame) Move(direction int) {
 }
 
 // NewBoard allocates memory for a rows*cols board.
-func NewBoard(nRows, nCols int) [][]TetrisCell {
+func NewBoard(nRows, nCols int) [][]Cell {
 
-	// Define the board as a slice of slices of TetrisCells
-	board := make([][]TetrisCell, nRows)
+	// Define the board as a slice of slices of Cells
+	board := make([][]Cell, nRows)
 
 	// Outer loop creates a row at a time
 	for row := range board {
-		board[row] = make([]TetrisCell, nCols)
+		board[row] = make([]Cell, nCols)
 	}
 
 	// Initialize all cells to empty
@@ -283,7 +283,7 @@ func NewBoard(nRows, nCols int) [][]TetrisCell {
 }
 
 // Put places a block onto the board
-func (pGame *TetrisGame) Put(block *TetrisBlock) {
+func (pGame *Game) Put(block *Block) {
 	for i := 0; i < NUM_CELLS; i++ {
 		location := Tetrominos[block.blockType][block.orientation][i]
 		newRow := block.location.row + location.row
@@ -293,7 +293,7 @@ func (pGame *TetrisGame) Put(block *TetrisBlock) {
 }
 
 // Clears a block off the board
-func (pGame *TetrisGame) Remove(block *TetrisBlock) {
+func (pGame *Game) Remove(block *Block) {
 	for i := 0; i < NUM_CELLS; i++ {
 		location := Tetrominos[block.blockType][block.orientation][i]
 		newRow := block.location.row + location.row
@@ -304,7 +304,7 @@ func (pGame *TetrisGame) Remove(block *TetrisBlock) {
 
 // Rotate rotates the falling block in either direction (+/-1), given
 // that it fits
-func (pGame *TetrisGame) Rotate(direction int) {
+func (pGame *Game) Rotate(direction int) {
 	pGame.Remove(pGame.fallingBlock)
 	for {
 		pGame.fallingBlock.orientation =
@@ -336,7 +336,7 @@ func (pGame *TetrisGame) Rotate(direction int) {
 }
 
 // Set sets the cell at the given row and column.
-func (pGame *TetrisGame) Set(row, col int, value TetrisCell) error {
+func (pGame *Game) Set(row, col int, value Cell) error {
 	if _, err := pGame.WithinBounds(row, col); err != nil {
 		return err
 	}
@@ -345,7 +345,7 @@ func (pGame *TetrisGame) Set(row, col int, value TetrisCell) error {
 }
 
 // Shift every row above r down one
-func (pGame *TetrisGame) ShiftLines(r int) {
+func (pGame *Game) ShiftLines(r int) {
 	for i := r - 1; i >= 0; i-- {
 		for j := 0; j < pGame.nCols; j++ {
 			cell := pGame.Get(i, j)
@@ -356,7 +356,7 @@ func (pGame *TetrisGame) ShiftLines(r int) {
 }
 
 // String returns a string representation of the game object
-func (pGame *TetrisGame) String() string {
+func (pGame *Game) String() string {
 
 	var sb strings.Builder
 
@@ -378,7 +378,7 @@ func (pGame *TetrisGame) String() string {
 	sb.WriteString(fmt.Sprintf("  points: %d\n", pGame.points))
 	sb.WriteString(fmt.Sprintf("  level: %d\n", pGame.level))
 
-	blockString := func(p *TetrisBlock) string {
+	blockString := func(p *Block) string {
 		if p != nil {
 			return p.String()
 		}
@@ -396,7 +396,7 @@ func (pGame *TetrisGame) String() string {
 
 // Do a single game tick: process gravity, user input, and score.
 // Return true if the game is still running, false if it is over.
-func (pGame *TetrisGame) Tick(move TetrisMove) bool {
+func (pGame *Game) Tick(move Move) bool {
 
 	// Handle gravity
 	pGame.DoGravityTick()
@@ -415,8 +415,8 @@ func (pGame *TetrisGame) Tick(move TetrisMove) bool {
 
 }
 
-// Converts a TetrisType to a TetrisCell
-func TypeToCell(typ TetrisType) TetrisCell {
+// Returns the Cell corresponding to a Type
+func TypeToCell(typ Type) Cell {
 	switch typ {
 	case TET_I:
 		return TC_CELLI
@@ -439,7 +439,7 @@ func TypeToCell(typ TetrisType) TetrisCell {
 
 // WithinBounds returns an error if the specified row or column is
 // contained in the board
-func (pGame *TetrisGame) WithinBounds(row, col int) (bool, error) {
+func (pGame *Game) WithinBounds(row, col int) (bool, error) {
 	switch {
 	case row < 0, row >= pGame.nRows:
 		errmsg := fmt.Sprintf("row %d is not >= %d and < %d", row, 0, pGame.nRows)

@@ -2,10 +2,10 @@ package tetris
 
 import "testing"
 
-func TestTetrisType_String(t *testing.T) {
+func TestType_String(t *testing.T) {
 	tests := []struct {
 		name string
-		tr   TetrisType
+		tr   Type
 		want string
 	}{
 		{"I", TET_I, "I"},
@@ -20,7 +20,7 @@ func TestTetrisType_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.tr.String(); got != tt.want {
-				t.Errorf("TetrisType.String() = %v, want %v", got, tt.want)
+				t.Errorf("Type.String() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -1,11 +1,11 @@
 package tetris
 
-// TetrisMove is an enumeration of all possible moves to give as input
+// Move is an enumeration of all possible moves to give as input
 // to the game
-type TetrisMove uint8
+type Move uint8
 
 const (
-	TM_LEFT TetrisMove = iota
+	TM_LEFT Move = iota
 	TM_RIGHT
 	TM_CLOCK
 	TM_COUNTER

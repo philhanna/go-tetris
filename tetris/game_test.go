@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-// Creates a TetrisGame with an initialized board
-func getTestGame(nRows, nCols int) *TetrisGame {
-	pGame := TetrisGame{
+// Creates a Game with an initialized board
+func getTestGame(nRows, nCols int) *Game {
+	pGame := Game{
 		nRows: nRows,
 		nCols: nCols,
 		board: NewBoard(nRows, nCols),
@@ -23,13 +23,13 @@ func getTestGame(nRows, nCols int) *TetrisGame {
 	return &pGame
 }
 
-func TestTetrisPrintGame_String(t *testing.T) {
+func TestPrintGame_String(t *testing.T) {
 	t.Skip("Only for debugging")
 	pGame := getTestGame(4, 12)
 	fmt.Println(pGame.String())
 }
 
-func TestTetrisGameGetSet(t *testing.T) {
+func TestGameGetSet(t *testing.T) {
 	pGame := getTestGame(22, 10)
 	input := TC_CELLJ
 	pGame.Set(3, 5, input)
@@ -39,7 +39,7 @@ func TestTetrisGameGetSet(t *testing.T) {
 	}
 }
 
-func TestTetrisGame_WithinBounds(t *testing.T) {
+func TestGame_WithinBounds(t *testing.T) {
 	nRows := 22
 	nCols := 10
 	tests := []struct {
@@ -63,7 +63,7 @@ func TestTetrisGame_WithinBounds(t *testing.T) {
 		{"col way too far right", 1, nCols + 17, false},
 	}
 	for _, tt := range tests {
-		game := NewTetrisGame(nRows, nCols)
+		game := NewGame(nRows, nCols)
 		have, err := game.WithinBounds(tt.row, tt.col)
 		if have != tt.want {
 			t.Error(err)
