@@ -33,7 +33,7 @@ func TestTetrisGameGetSet(t *testing.T) {
 	pGame := getTestGame(22, 10)
 	input := TC_CELLJ
 	pGame.Set(3, 5, input)
-	output, _ := pGame.Get(3, 5)
+	output := pGame.Get(3, 5)
 	if input != output {
 		t.Errorf("Get didn't return what was set: input=%q,output=%q", input, output)
 	}
