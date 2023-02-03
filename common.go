@@ -20,3 +20,17 @@ var GRAVITY_LEVEL = []int{
 	50, 48, 46, 44, 42, 40, 38, 36, 34, 32,
 	30, 28, 26, 24, 22, 20, 16, 12, 8, 4,
 }
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
