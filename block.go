@@ -27,15 +27,10 @@ func (pBlock *TetrisBlock) String() string {
 // returns a pointer to it.
 func RandomBlock(cols int) *TetrisBlock {
 
-	pBlock := new(TetrisBlock)
-
 	tetrisTypes := []TetrisType{TET_I, TET_J, TET_L, TET_O, TET_S, TET_T, TET_Z}
 	i := rand.Intn(len(tetrisTypes))
+	location := TetrisLocation{0, cols/2 - 2}
+	block := TetrisBlock{tetrisTypes[i], 0, location}
 
-	pBlock.blockType = tetrisTypes[i]
-	pBlock.orientation = 0
-	pBlock.location.row = 0
-	pBlock.location.col = cols/2 - 2
-
-	return pBlock
+	return &block
 }
