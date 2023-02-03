@@ -104,8 +104,15 @@ func (pGame *TetrisGame) DoGravityTick() {
 	}
 }
 
+// Send the falling tetris block to the bottom.
 func (pGame *TetrisGame) Down() {
-	// TODO implement me
+	pGame.Remove(pGame.fallingBlock)
+	for pGame.Fits(pGame.fallingBlock) {
+		pGame.fallingBlock.location.row++
+	}
+	pGame.fallingBlock.location.row--
+	pGame.Put(pGame.fallingBlock)
+	pGame.MakeNewBlocks()
 }
 
 // Checks whether a block can be placed on the board
