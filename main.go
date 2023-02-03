@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"tetris/tetris"
+	// "tetris/tetris"
 	// ncurses "github.com/rthornton128/goncurses"
 )
 
@@ -13,8 +15,30 @@ const (
 
 // Main tetris game
 func main() {
-	var tg tetris.Game
+
+	var (
+		tg   tetris.Game
+		argc = len(os.Args)
+	)
+
+	// Load file if given a filename.
+	if argc >= 2 {
+		// NOP for now
+	} else {
+		tg = tetris.NewGame(22, 10)
+	}
+
+	/*
+		stdscr, err := ncurses.Init()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer ncurses.End()
+	*/
 
 	// Dummy usage of unused variables
-	fmt.Println(tg)
+	if true {
+		fmt.Println("tg:", tg)
+		// fmt.Println("stdscr:", stdscr)
+	}
 }
