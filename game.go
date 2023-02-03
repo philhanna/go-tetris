@@ -185,11 +185,26 @@ func (pGame *TetrisGame) HandleMove(move TetrisMove) {
 // Swap the falling block with the block in the hold buffer.
 func (pGame *TetrisGame) Hold() {
 	pGame.Remove(pGame.fallingBlock)
-	// TODO finish me
 	if pGame.storedBlock == nil {
+
+		// There is no stored block. Just copy the falling one.
+
 		pGame.storedBlock = pGame.fallingBlock
 	} else {
 
+		// There is a stored block. Swap with the falling one.
+
+		typ := pGame.fallingBlock.blockType
+		ori := pGame.fallingBlock.orientation
+
+		pGame.fallingBlock.blockType = pGame.storedBlock.blockType
+		pGame.fallingBlock.orientation = pGame.storedBlock.orientation
+
+		pGame.storedBlock.blockType = typ
+		pGame.storedBlock.orientation = ori
+		for !pGame.Fits(pGame.fallingBlock) {
+			pGame.fallingBlock.location.row--
+		}
 	}
 	pGame.Put(pGame.fallingBlock)
 }
