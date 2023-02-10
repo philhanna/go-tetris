@@ -10,24 +10,14 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
-const (
-	COLS_PER_CELL = 2 // 2 columns per cell makes the game much nicer.
-)
-
-// Cell colors (used in initColors())
-const (
-	COLOR_BLACK int16 = iota
-	COLOR_RED
-	COLOR_GREEN
-	COLOR_YELLOW
-	COLOR_BLUE
-	COLOR_MAGENTA
-	COLOR_CYAN
-	COLOR_WHITE
-)
-
 // Main tetris game
 func main() {
+
+	var (
+		tg      *tetris.Game
+		running = true
+		move    = tetris.TM_NONE
+	)
 
 	// NCURSES initialization
 	stdscr, err := gc.Init()
@@ -42,10 +32,11 @@ func main() {
 	stdscr.Keypad(true) // allow arrow keys
 	stdscr.Timeout(0)   // no blocking on getch()
 	gc.Cursor(0)        // cursor invisible
-	initColors()        // setup tetris colors
+	InitColors()        // setup tetris colors
 
 	// Now we can create the game
-	tg := tetris.NewGame(22, 10)
+	newGame := tetris.NewGame(22, 10)
+	tg = &newGame
 
 	// Create windows for each section of the interface.
 	h := tg.NRows + 2
@@ -55,15 +46,27 @@ func main() {
 	hold, _ := gc.NewWindow(6, 10, 7, w+3)
 	score, _ := gc.NewWindow(6, 10, 14, w+3)
 
+	// Game loop
+	for running {
+		running = tg.Tick(move)
+		DisplayBoard(board, tg)
+		// displayPiece(next, tg.NextBlock)
+		// displayPiece(hold, tg.StoredBlock)
+		// displayScore(score, tg)
+	}
+
 	// TODO: Remove this section after all variables are referenced.
 	if false {
-		fmt.Println(tg)
-		fmt.Println(board, next, hold, score)
+		fmt.Println(board)
+		fmt.Println(next)
+		fmt.Println(hold)
+		fmt.Println(score)
+		fmt.Println(move)
 	}
 }
 
 // Do the NCURSES initialization steps for color blocks.
-func initColors() {
+func InitColors() {
 	gc.StartColor()
 	gc.InitPair(int16(tetris.TC_CELLI), COLOR_CYAN, COLOR_BLACK)
 	gc.InitPair(int16(tetris.TC_CELLJ), COLOR_BLUE, COLOR_BLACK)
@@ -72,4 +75,37 @@ func initColors() {
 	gc.InitPair(int16(tetris.TC_CELLS), COLOR_GREEN, COLOR_BLACK)
 	gc.InitPair(int16(tetris.TC_CELLT), COLOR_MAGENTA, COLOR_BLACK)
 	gc.InitPair(int16(tetris.TC_CELLZ), COLOR_RED, COLOR_BLACK)
+}
+
+// Print the tetris board onto the ncurses window.
+func DisplayBoard(w *gc.Window, tg *tetris.Game) {
+	w.Box(0, 0)
+	for i := 0; i < tg.NRows; i++ {
+		w.Move(1+i, 1)
+		for j := 0; j < tg.NCols; j++ {
+			cell := tg.Get(i, j)
+			if cell == tetris.TC_EMPTY {
+				ADD_BLOCK(w, cell)
+			} else {
+				ADD_EMPTY(w)
+			}
+		}
+	}
+	w.NoutRefresh()
+}
+
+func ADD_BLOCK(w *gc.Window, cell tetris.Cell) {
+	var ach gc.Char
+	for i := 0; i < COLS_PER_CELL; i++ {
+		ach = ' ' | gc.A_REVERSE | gc.ColorPair(int16(cell))
+		w.AddChar(ach)
+	}
+}
+
+func ADD_EMPTY(w *gc.Window) {
+	var ach gc.Char
+	for i := 0; i < COLS_PER_CELL; i++ {
+		ach = ' '
+		w.AddChar(ach)
+	}
 }

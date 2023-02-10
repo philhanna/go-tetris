@@ -10,15 +10,15 @@ func getTestGame(nRows, nCols int) *Game {
 	pGame := Game{
 		NRows: nRows,
 		NCols: nCols,
-		board: NewBoard(nRows, nCols),
+		Board: NewBoard(nRows, nCols),
 	}
 	for col := 0; col < nCols; col++ {
-		pGame.board[0][col] = TC_CELLO
-		pGame.board[nRows-1][col] = TC_CELLO
+		pGame.Board[0][col] = TC_CELLO
+		pGame.Board[nRows-1][col] = TC_CELLO
 	}
 	for row := 1; row < nRows-1; row++ {
-		pGame.board[row][0] = TC_CELLO
-		pGame.board[row][nCols-1] = TC_CELLO
+		pGame.Board[row][0] = TC_CELLO
+		pGame.Board[row][nCols-1] = TC_CELLO
 	}
 	return &pGame
 }

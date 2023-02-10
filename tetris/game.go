@@ -14,24 +14,24 @@ type Game struct {
 	// Dimensions and contents of the board
 	NRows int
 	NCols int
-	board [][]Cell
+	Board [][]Cell
 
 	// Scoring information
-	points int
-	level  int
+	Points int
+	Level  int
 
 	// Falling block is the one currently going down.
-	// Next block is the one that will be fallingBlock after this one.
+	// Next block is the one that will be FallingBlock after this one.
 	// Stored is the block that you can swap out.
-	fallingBlock *Block
-	nextBlock    *Block
-	storedBlock  *Block
+	FallingBlock *Block
+	NextBlock    *Block
+	StoredBlock  *Block
 
 	// Number of game ticks until the block will move down
-	ticksRemaining int
+	TicksRemaining int
 
 	// Number of lines until you advance to the next level.
-	linesRemaining int
+	LinesRemaining int
 }
 
 // NewGame is the constructor for a Game object
@@ -50,16 +50,16 @@ func (pGame *Game) AdjustScore(linesCleared int) {
 	// Add the points for the number of lines cleared to the game's
 	// points variable
 	multiplier := lineMultiplier[linesCleared]
-	nextLevel := pGame.level + 1
+	nextLevel := pGame.Level + 1
 	points := multiplier * nextLevel
-	pGame.points += points
+	pGame.Points += points
 
 	// Update the lines remaining variable.
-	if linesCleared >= pGame.linesRemaining {
-		pGame.level = min(MAX_LEVEL, pGame.level+1)
-		pGame.linesRemaining = LINES_PER_LEVEL - linesCleared
+	if linesCleared >= pGame.LinesRemaining {
+		pGame.Level = min(MAX_LEVEL, pGame.Level+1)
+		pGame.LinesRemaining = LINES_PER_LEVEL - linesCleared
 	} else {
-		pGame.linesRemaining = linesCleared
+		pGame.LinesRemaining = linesCleared
 	}
 }
 
@@ -68,7 +68,7 @@ func (pGame *Game) AdjustScore(linesCleared int) {
 func (pGame *Game) CheckLines() int {
 
 	// Save and restore the falling block
-	pGame.Remove(pGame.fallingBlock)
+	pGame.Remove(pGame.FallingBlock)
 
 	// Find the number of lines that have been cleared in this method
 	nLines := 0
@@ -81,7 +81,7 @@ func (pGame *Game) CheckLines() int {
 	}
 
 	// Restore the falling block
-	pGame.Put(pGame.fallingBlock)
+	pGame.Put(pGame.FallingBlock)
 
 	return nLines
 }
@@ -90,28 +90,28 @@ func (pGame *Game) CheckLines() int {
 // and score.  Return true if the game is still running, false if it is
 // over.
 func (pGame *Game) DoGravityTick() {
-	pGame.ticksRemaining--
-	if pGame.ticksRemaining <= 0 {
-		pGame.Remove(pGame.fallingBlock)
-		pGame.fallingBlock.location.row++
-		if pGame.Fits(pGame.fallingBlock) {
-			pGame.ticksRemaining = GRAVITY_LEVEL[pGame.level]
+	pGame.TicksRemaining--
+	if pGame.TicksRemaining <= 0 {
+		pGame.Remove(pGame.FallingBlock)
+		pGame.FallingBlock.location.row++
+		if pGame.Fits(pGame.FallingBlock) {
+			pGame.TicksRemaining = GRAVITY_LEVEL[pGame.Level]
 		} else {
-			pGame.fallingBlock.location.row--
-			pGame.Put(pGame.fallingBlock)
+			pGame.FallingBlock.location.row--
+			pGame.Put(pGame.FallingBlock)
 		}
-		pGame.Put(pGame.fallingBlock)
+		pGame.Put(pGame.FallingBlock)
 	}
 }
 
 // Send the falling tetris block to the bottom.
 func (pGame *Game) Down() {
-	pGame.Remove(pGame.fallingBlock)
-	for pGame.Fits(pGame.fallingBlock) {
-		pGame.fallingBlock.location.row++
+	pGame.Remove(pGame.FallingBlock)
+	for pGame.Fits(pGame.FallingBlock) {
+		pGame.FallingBlock.location.row++
 	}
-	pGame.fallingBlock.location.row--
-	pGame.Put(pGame.fallingBlock)
+	pGame.FallingBlock.location.row--
+	pGame.Put(pGame.FallingBlock)
 	pGame.MakeNewBlocks()
 }
 
@@ -140,7 +140,7 @@ func (pGame *Game) Fits(block *Block) bool {
 func (pGame *Game) GameOver() bool {
 
 	// Save and restore falling block at the end of this method.
-	pGame.Remove(pGame.fallingBlock)
+	pGame.Remove(pGame.FallingBlock)
 	over := false
 
 	// If the top two rows are not clear, the game is over
@@ -152,7 +152,7 @@ func (pGame *Game) GameOver() bool {
 			}
 		}
 	}
-	pGame.Put(pGame.fallingBlock)
+	pGame.Put(pGame.FallingBlock)
 	return over
 }
 
@@ -161,7 +161,7 @@ func (pGame *Game) Get(row, col int) Cell {
 	if ok, _ := pGame.WithinBounds(row, col); !ok {
 		return TC_EMPTY
 	}
-	return pGame.board[row][col]
+	return pGame.Board[row][col]
 }
 
 // HandleMove performs the action specified by the move.
@@ -184,29 +184,29 @@ func (pGame *Game) HandleMove(move Move) {
 
 // Swap the falling block with the block in the hold buffer.
 func (pGame *Game) Hold() {
-	pGame.Remove(pGame.fallingBlock)
-	if pGame.storedBlock == nil {
+	pGame.Remove(pGame.FallingBlock)
+	if pGame.StoredBlock == nil {
 
 		// There is no stored block. Just copy the falling one.
 
-		pGame.storedBlock = pGame.fallingBlock
+		pGame.StoredBlock = pGame.FallingBlock
 	} else {
 
 		// There is a stored block. Swap with the falling one.
 
-		typ := pGame.fallingBlock.blockType
-		ori := pGame.fallingBlock.orientation
+		typ := pGame.FallingBlock.blockType
+		ori := pGame.FallingBlock.orientation
 
-		pGame.fallingBlock.blockType = pGame.storedBlock.blockType
-		pGame.fallingBlock.orientation = pGame.storedBlock.orientation
+		pGame.FallingBlock.blockType = pGame.StoredBlock.blockType
+		pGame.FallingBlock.orientation = pGame.StoredBlock.orientation
 
-		pGame.storedBlock.blockType = typ
-		pGame.storedBlock.orientation = ori
-		for !pGame.Fits(pGame.fallingBlock) {
-			pGame.fallingBlock.location.row--
+		pGame.StoredBlock.blockType = typ
+		pGame.StoredBlock.orientation = ori
+		for !pGame.Fits(pGame.FallingBlock) {
+			pGame.FallingBlock.location.row--
 		}
 	}
-	pGame.Put(pGame.fallingBlock)
+	pGame.Put(pGame.FallingBlock)
 }
 
 // Init initializes the data in a Game object
@@ -215,13 +215,13 @@ func (pGame *Game) Init(nRows, nCols int) {
 	// Initialize the boilerplate fields
 	pGame.NRows = nRows
 	pGame.NCols = nCols
-	pGame.board = NewBoard(nRows, nCols)
-	pGame.points = 0
-	pGame.level = 0
-	pGame.nextBlock = nil
-	pGame.storedBlock = nil
-	pGame.ticksRemaining = GRAVITY_LEVEL[0]
-	pGame.linesRemaining = LINES_PER_LEVEL
+	pGame.Board = NewBoard(nRows, nCols)
+	pGame.Points = 0
+	pGame.Level = 0
+	pGame.NextBlock = nil
+	pGame.StoredBlock = nil
+	pGame.TicksRemaining = GRAVITY_LEVEL[0]
+	pGame.LinesRemaining = LINES_PER_LEVEL
 
 	// Initialize the random number generator so that we can generate
 	// the first two random tetrominos
@@ -247,19 +247,19 @@ func (pGame *Game) LineFull(i int) bool {
 // MakeNewBlocks moves the next block to the falling block and creates a
 // new randomly chosen block
 func (pGame *Game) MakeNewBlocks() {
-	pGame.fallingBlock = pGame.nextBlock
-	pGame.nextBlock = RandomBlock(pGame.NCols)
+	pGame.FallingBlock = pGame.NextBlock
+	pGame.NextBlock = RandomBlock(pGame.NCols)
 }
 
 // Move moves the falling tetris block left (-1) or right (+1), given
 // that it fits
 func (pGame *Game) Move(direction int) {
-	pGame.Remove(pGame.fallingBlock)
-	pGame.fallingBlock.location.col += direction
-	if !pGame.Fits(pGame.fallingBlock) {
-		pGame.fallingBlock.location.col -= direction
+	pGame.Remove(pGame.FallingBlock)
+	pGame.FallingBlock.location.col += direction
+	if !pGame.Fits(pGame.FallingBlock) {
+		pGame.FallingBlock.location.col -= direction
 	}
-	pGame.Put(pGame.fallingBlock)
+	pGame.Put(pGame.FallingBlock)
 }
 
 // NewBoard allocates memory for a rows*cols board.
@@ -305,34 +305,34 @@ func (pGame *Game) Remove(block *Block) {
 // Rotate rotates the falling block in either direction (+/-1), given
 // that it fits
 func (pGame *Game) Rotate(direction int) {
-	pGame.Remove(pGame.fallingBlock)
+	pGame.Remove(pGame.FallingBlock)
 	for {
-		pGame.fallingBlock.orientation =
-			(pGame.fallingBlock.orientation + direction) % NUM_ORIENTATIONS
+		pGame.FallingBlock.orientation =
+			(pGame.FallingBlock.orientation + direction) % NUM_ORIENTATIONS
 
 		// If the new orientation fits, we're done
-		if pGame.Fits(pGame.fallingBlock) {
+		if pGame.Fits(pGame.FallingBlock) {
 			break
 		}
 
 		// Otherwise, try moving it to the left to make it fit
-		pGame.fallingBlock.location.col--
-		if pGame.Fits(pGame.fallingBlock) {
+		pGame.FallingBlock.location.col--
+		if pGame.Fits(pGame.FallingBlock) {
 			break
 		}
 
 		// Finally, try moving it to the right to make it fit
-		pGame.fallingBlock.location.col += 2
-		if pGame.Fits(pGame.fallingBlock) {
+		pGame.FallingBlock.location.col += 2
+		if pGame.Fits(pGame.FallingBlock) {
 			break
 		}
 
 		// Put it back in its original location and try the next
 		// orientation. Worst case, we come back to the original
 		// orientation and it fits, so this loop will terminate
-		pGame.fallingBlock.location.col--
+		pGame.FallingBlock.location.col--
 	}
-	pGame.Put(pGame.fallingBlock)
+	pGame.Put(pGame.FallingBlock)
 }
 
 // Set sets the cell at the given row and column.
@@ -340,7 +340,7 @@ func (pGame *Game) Set(row, col int, value Cell) error {
 	if _, err := pGame.WithinBounds(row, col); err != nil {
 		return err
 	}
-	pGame.board[row][col] = value
+	pGame.Board[row][col] = value
 	return nil
 }
 
@@ -366,7 +366,7 @@ func (pGame *Game) String() string {
 	sb.WriteString("  board: {\n")
 
 	// Write each row
-	for _, cells := range pGame.board {
+	for _, cells := range pGame.Board {
 		sb.WriteString("    {")
 		// Write each column in this row
 		for _, cell := range cells {
@@ -375,8 +375,8 @@ func (pGame *Game) String() string {
 		sb.WriteString("}\n")
 	}
 	sb.WriteString("  }\n")
-	sb.WriteString(fmt.Sprintf("  points: %d\n", pGame.points))
-	sb.WriteString(fmt.Sprintf("  level: %d\n", pGame.level))
+	sb.WriteString(fmt.Sprintf("  points: %d\n", pGame.Points))
+	sb.WriteString(fmt.Sprintf("  level: %d\n", pGame.Level))
 
 	blockString := func(p *Block) string {
 		if p != nil {
@@ -384,11 +384,11 @@ func (pGame *Game) String() string {
 		}
 		return "<nil>"
 	}
-	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.fallingBlock)))
-	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.nextBlock)))
-	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.storedBlock)))
-	sb.WriteString(fmt.Sprintf("  ticksRemaining: %d\n", pGame.ticksRemaining))
-	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.linesRemaining))
+	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.FallingBlock)))
+	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.NextBlock)))
+	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.StoredBlock)))
+	sb.WriteString(fmt.Sprintf("  ticksRemaining: %d\n", pGame.TicksRemaining))
+	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.LinesRemaining))
 
 	s := sb.String()
 	return s
