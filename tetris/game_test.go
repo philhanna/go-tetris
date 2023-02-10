@@ -8,8 +8,8 @@ import (
 // Creates a Game with an initialized board
 func getTestGame(nRows, nCols int) *Game {
 	pGame := Game{
-		nRows: nRows,
-		nCols: nCols,
+		NRows: nRows,
+		NCols: nCols,
 		board: NewBoard(nRows, nCols),
 	}
 	for col := 0; col < nCols; col++ {

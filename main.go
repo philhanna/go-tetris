@@ -29,12 +29,13 @@ const (
 // Main tetris game
 func main() {
 
-	// Initialize curses
+	// NCURSES initialization
 	stdscr, err := gc.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer gc.End()
+	defer stdscr.Clear()
 
 	gc.CBreak(true)     // pass key presses to program, but not signals
 	gc.Echo(false)      // don't echo key presses to screen
@@ -43,10 +44,21 @@ func main() {
 	gc.Cursor(0)        // cursor invisible
 	initColors()        // setup tetris colors
 
+	// Now we can create the game
 	tg := tetris.NewGame(22, 10)
 
+	// Create windows for each section of the interface.
+	h := tg.NRows + 2
+	w := COLS_PER_CELL * (tg.NCols + 1)
+	board, _ := gc.NewWindow(h, w, 0, 0)
+	next, _ := gc.NewWindow(6, 10, 0, w+3)
+	hold, _ := gc.NewWindow(6, 10, 7, w+3)
+	score, _ := gc.NewWindow(6, 10, 14, w+3)
+
+	// TODO: Remove this section after all variables are referenced.
 	if false {
 		fmt.Println(tg)
+		fmt.Println(board, next, hold, score)
 	}
 }
 

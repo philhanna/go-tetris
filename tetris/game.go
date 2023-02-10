@@ -12,8 +12,8 @@ import (
 // of play
 type Game struct {
 	// Dimensions and contents of the board
-	nRows int
-	nCols int
+	NRows int
+	NCols int
 	board [][]Cell
 
 	// Scoring information
@@ -72,7 +72,7 @@ func (pGame *Game) CheckLines() int {
 
 	// Find the number of lines that have been cleared in this method
 	nLines := 0
-	for i := pGame.nRows - 1; i >= 0; i-- {
+	for i := pGame.NRows - 1; i >= 0; i-- {
 		if pGame.LineFull(i) {
 			pGame.ShiftLines(i)
 			i++ // Do this line again because they've shifted
@@ -145,7 +145,7 @@ func (pGame *Game) GameOver() bool {
 
 	// If the top two rows are not clear, the game is over
 	for i := 0; i < 2; i++ {
-		for j := 0; j < pGame.nCols; j++ {
+		for j := 0; j < pGame.NCols; j++ {
 			cell := pGame.Get(i, j)
 			if cell != TC_EMPTY {
 				over = true
@@ -213,8 +213,8 @@ func (pGame *Game) Hold() {
 func (pGame *Game) Init(nRows, nCols int) {
 
 	// Initialize the boilerplate fields
-	pGame.nRows = nRows
-	pGame.nCols = nCols
+	pGame.NRows = nRows
+	pGame.NCols = nCols
 	pGame.board = NewBoard(nRows, nCols)
 	pGame.points = 0
 	pGame.level = 0
@@ -235,7 +235,7 @@ func (pGame *Game) Init(nRows, nCols int) {
 
 // Returns true if line i is full
 func (pGame *Game) LineFull(i int) bool {
-	for j := 0; j < pGame.nCols; j++ {
+	for j := 0; j < pGame.NCols; j++ {
 		cell := pGame.Get(i, j)
 		if cell == TC_EMPTY {
 			return false
@@ -248,7 +248,7 @@ func (pGame *Game) LineFull(i int) bool {
 // new randomly chosen block
 func (pGame *Game) MakeNewBlocks() {
 	pGame.fallingBlock = pGame.nextBlock
-	pGame.nextBlock = RandomBlock(pGame.nCols)
+	pGame.nextBlock = RandomBlock(pGame.NCols)
 }
 
 // Move moves the falling tetris block left (-1) or right (+1), given
@@ -347,7 +347,7 @@ func (pGame *Game) Set(row, col int, value Cell) error {
 // Shift every row above r down one
 func (pGame *Game) ShiftLines(r int) {
 	for i := r - 1; i >= 0; i-- {
-		for j := 0; j < pGame.nCols; j++ {
+		for j := 0; j < pGame.NCols; j++ {
 			cell := pGame.Get(i, j)
 			pGame.Set(i+1, j, cell)
 			pGame.Set(i, j, TC_EMPTY)
@@ -361,8 +361,8 @@ func (pGame *Game) String() string {
 	var sb strings.Builder
 
 	sb.WriteString("Game:\n")
-	sb.WriteString(fmt.Sprintf("  nRows: %d\n", pGame.nRows))
-	sb.WriteString(fmt.Sprintf("  nCols: %d\n", pGame.nCols))
+	sb.WriteString(fmt.Sprintf("  nRows: %d\n", pGame.NRows))
+	sb.WriteString(fmt.Sprintf("  nCols: %d\n", pGame.NCols))
 	sb.WriteString("  board: {\n")
 
 	// Write each row
@@ -441,11 +441,11 @@ func TypeToCell(typ Type) Cell {
 // contained in the board
 func (pGame *Game) WithinBounds(row, col int) (bool, error) {
 	switch {
-	case row < 0, row >= pGame.nRows:
-		errmsg := fmt.Sprintf("row %d is not >= %d and < %d", row, 0, pGame.nRows)
+	case row < 0, row >= pGame.NRows:
+		errmsg := fmt.Sprintf("row %d is not >= %d and < %d", row, 0, pGame.NRows)
 		return false, errors.New(errmsg)
-	case col < 0, col >= pGame.nCols:
-		errmsg := fmt.Sprintf("col %d is not >= %d and < %d", col, 0, pGame.nCols)
+	case col < 0, col >= pGame.NCols:
+		errmsg := fmt.Sprintf("col %d is not >= %d and < %d", col, 0, pGame.NCols)
 		return false, errors.New(errmsg)
 	default:
 		return true, nil
