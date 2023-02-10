@@ -67,7 +67,7 @@ func main() {
 	}
 }
 
-// Do the NCURSES initialization steps for color blocks.
+// InitColors does the NCURSES initialization steps for color blocks.
 func InitColors() {
 	gc.StartColor()
 	gc.InitPair(int16(tetris.TC_CELLI), gc.C_CYAN, gc.C_BLACK)
@@ -79,7 +79,7 @@ func InitColors() {
 	gc.InitPair(int16(tetris.TC_CELLZ), gc.C_RED, gc.C_BLACK)
 }
 
-// Print the tetris board onto the ncurses window.
+// DisplayBoard prints the tetris board onto the ncurses window.
 func DisplayBoard(w *gc.Window, tg *tetris.Game) {
 	w.Box(0, 0)
 	for i := 0; i < tg.NRows; i++ {
@@ -96,7 +96,7 @@ func DisplayBoard(w *gc.Window, tg *tetris.Game) {
 	w.NoutRefresh()
 }
 
-// Draws a cell
+// AddBlock draws a cell
 func AddBlock(w *gc.Window, cell tetris.Cell) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
@@ -105,7 +105,7 @@ func AddBlock(w *gc.Window, cell tetris.Cell) {
 	}
 }
 
-// Erases a cell
+// AddEmpty erases a cell
 func AddEmpty(w *gc.Window) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
