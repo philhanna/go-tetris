@@ -9,16 +9,16 @@ import (
 // Specifically, what type it is, what orientation it has, and where it
 // is.
 type Block struct {
-	blockType   Type
-	orientation int
-	location    Location
+	BlockType   Type
+	Orientation int
+	Location    Location
 }
 
 // String returns a string representation of a Block
 func (pBlock *Block) String() string {
-	blockTypeStr := pBlock.blockType.String()
-	orientation := pBlock.orientation
-	locationStr := pBlock.location.String()
+	blockTypeStr := pBlock.BlockType.String()
+	orientation := pBlock.Orientation
+	locationStr := pBlock.Location.String()
 	s := fmt.Sprintf("(%q,%d,%s", blockTypeStr, orientation, locationStr)
 	return s
 }
