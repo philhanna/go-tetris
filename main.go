@@ -85,16 +85,17 @@ func DisplayBoard(w *gc.Window, tg *tetris.Game) {
 		for j := 0; j < tg.NCols; j++ {
 			cell := tg.Get(i, j)
 			if cell == tetris.TC_EMPTY {
-				ADD_BLOCK(w, cell)
+				AddBlock(w, cell)
 			} else {
-				ADD_EMPTY(w)
+				AddEmpty(w)
 			}
 		}
 	}
 	w.NoutRefresh()
 }
 
-func ADD_BLOCK(w *gc.Window, cell tetris.Cell) {
+// Draws a cell
+func AddBlock(w *gc.Window, cell tetris.Cell) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
 		ach = ' ' | gc.A_REVERSE | gc.ColorPair(int16(cell))
@@ -102,7 +103,8 @@ func ADD_BLOCK(w *gc.Window, cell tetris.Cell) {
 	}
 }
 
-func ADD_EMPTY(w *gc.Window) {
+// Erases a cell
+func AddEmpty(w *gc.Window) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
 		ach = ' '
