@@ -10,9 +10,11 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
+const COLS_PER_CELL = 2
+
 // Main tetris game
 func main() {
-
+	
 	var (
 		tg      *tetris.Game
 		running = true
@@ -68,13 +70,13 @@ func main() {
 // Do the NCURSES initialization steps for color blocks.
 func InitColors() {
 	gc.StartColor()
-	gc.InitPair(int16(tetris.TC_CELLI), COLOR_CYAN, COLOR_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLJ), COLOR_BLUE, COLOR_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLL), COLOR_WHITE, COLOR_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLO), COLOR_YELLOW, COLOR_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLS), COLOR_GREEN, COLOR_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLT), COLOR_MAGENTA, COLOR_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLZ), COLOR_RED, COLOR_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLI), gc.C_CYAN, gc.C_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLJ), gc.C_BLUE, gc.C_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLL), gc.C_WHITE, gc.C_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLO), gc.C_YELLOW, gc.C_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLS), gc.C_GREEN, gc.C_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLT), gc.C_MAGENTA, gc.C_BLACK)
+	gc.InitPair(int16(tetris.TC_CELLZ), gc.C_RED, gc.C_BLACK)
 }
 
 // Print the tetris board onto the ncurses window.
