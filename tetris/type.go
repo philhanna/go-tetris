@@ -34,3 +34,25 @@ func (t Type) String() string {
 	}
 	return "?"
 }
+
+// Returns the Cell corresponding to a Type
+func TypeToCell(typ Type) Cell {
+	switch typ {
+	case TET_I:
+		return TC_CELLI
+	case TET_J:
+		return TC_CELLJ
+	case TET_L:
+		return TC_CELLL
+	case TET_O:
+		return TC_CELLO
+	case TET_S:
+		return TC_CELLS
+	case TET_T:
+		return TC_CELLT
+	case TET_Z:
+		return TC_CELLZ
+	default:
+		return TC_EMPTY
+	}
+}

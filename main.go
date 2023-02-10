@@ -52,14 +52,13 @@ func main() {
 	for running {
 		running = tg.Tick(move)
 		DisplayBoard(board, tg)
-		// displayPiece(next, tg.NextBlock)
-		// displayPiece(hold, tg.StoredBlock)
+		DisplayPiece(next, *tg.NextBlock)
+		DisplayPiece(hold, *tg.StoredBlock)
 		// displayScore(score, tg)
 	}
 
 	// TODO: Remove this section after all variables are referenced.
 	if false {
-		fmt.Println(board)
 		fmt.Println(next)
 		fmt.Println(hold)
 		fmt.Println(score)
@@ -96,7 +95,7 @@ func DisplayBoard(w *gc.Window, tg *tetris.Game) {
 	w.NoutRefresh()
 }
 
-// AddBlock draws a cell
+// AddBlock draws a cell with the right color
 func AddBlock(w *gc.Window, cell tetris.Cell) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
@@ -112,4 +111,23 @@ func AddEmpty(w *gc.Window) {
 		ach = ' '
 		w.AddChar(ach)
 	}
+}
+
+// DisplayPiece displays a tetris piece in a dedicated window.
+func DisplayPiece(w *gc.Window, block tetris.Block) {
+	w.Clear()
+	w.Box(0, 0)
+	if block.BlockType == -1 {
+		w.NoutRefresh()
+		return
+	}
+	for b := 0; b < tetris.NUM_CELLS; b++ {
+		location := tetris.Tetrominos[block.BlockType][block.Orientation][b]
+		y := location.Row + 1
+		x := location.Col * COLS_PER_CELL + 1
+		w.Move(y, x)
+		cell := tetris.TypeToCell(block.BlockType)	
+		AddBlock(w, cell)
+	}
+	w.NoutRefresh()	
 }

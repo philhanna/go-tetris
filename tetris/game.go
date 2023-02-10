@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-// Game is a class that holds all the information about the state
-// of play
+// Game is a structure in the model that holds all the information
+// about the state of play.
 type Game struct {
 	// Dimensions and contents of the board
 	NRows int
@@ -93,11 +93,11 @@ func (pGame *Game) DoGravityTick() {
 	pGame.TicksRemaining--
 	if pGame.TicksRemaining <= 0 {
 		pGame.Remove(pGame.FallingBlock)
-		pGame.FallingBlock.location.row++
+		pGame.FallingBlock.Location.Row++
 		if pGame.Fits(pGame.FallingBlock) {
 			pGame.TicksRemaining = GRAVITY_LEVEL[pGame.Level]
 		} else {
-			pGame.FallingBlock.location.row--
+			pGame.FallingBlock.Location.Row--
 			pGame.Put(pGame.FallingBlock)
 		}
 		pGame.Put(pGame.FallingBlock)
@@ -108,9 +108,9 @@ func (pGame *Game) DoGravityTick() {
 func (pGame *Game) Down() {
 	pGame.Remove(pGame.FallingBlock)
 	for pGame.Fits(pGame.FallingBlock) {
-		pGame.FallingBlock.location.row++
+		pGame.FallingBlock.Location.Row++
 	}
-	pGame.FallingBlock.location.row--
+	pGame.FallingBlock.Location.Row--
 	pGame.Put(pGame.FallingBlock)
 	pGame.MakeNewBlocks()
 }
@@ -118,9 +118,9 @@ func (pGame *Game) Down() {
 // Checks whether a block can be placed on the board
 func (pGame *Game) Fits(block *Block) bool {
 	for i := 0; i < NUM_CELLS; i++ {
-		location := Tetrominos[block.blockType][block.orientation][i]
-		row := block.location.row + location.row
-		col := block.location.col + location.col
+		location := Tetrominos[block.BlockType][block.Orientation][i]
+		row := block.Location.Row + location.Row
+		col := block.Location.Col + location.Col
 
 		// If the new location is outside the board, no fit.
 		if ok, _ := pGame.WithinBounds(row, col); !ok {
@@ -194,16 +194,16 @@ func (pGame *Game) Hold() {
 
 		// There is a stored block. Swap with the falling one.
 
-		typ := pGame.FallingBlock.blockType
-		ori := pGame.FallingBlock.orientation
+		typ := pGame.FallingBlock.BlockType
+		ori := pGame.FallingBlock.Orientation
 
-		pGame.FallingBlock.blockType = pGame.StoredBlock.blockType
-		pGame.FallingBlock.orientation = pGame.StoredBlock.orientation
+		pGame.FallingBlock.BlockType = pGame.StoredBlock.BlockType
+		pGame.FallingBlock.Orientation = pGame.StoredBlock.Orientation
 
-		pGame.StoredBlock.blockType = typ
-		pGame.StoredBlock.orientation = ori
+		pGame.StoredBlock.BlockType = typ
+		pGame.StoredBlock.Orientation = ori
 		for !pGame.Fits(pGame.FallingBlock) {
-			pGame.FallingBlock.location.row--
+			pGame.FallingBlock.Location.Row--
 		}
 	}
 	pGame.Put(pGame.FallingBlock)
@@ -255,9 +255,9 @@ func (pGame *Game) MakeNewBlocks() {
 // that it fits
 func (pGame *Game) Move(direction int) {
 	pGame.Remove(pGame.FallingBlock)
-	pGame.FallingBlock.location.col += direction
+	pGame.FallingBlock.Location.Col += direction
 	if !pGame.Fits(pGame.FallingBlock) {
-		pGame.FallingBlock.location.col -= direction
+		pGame.FallingBlock.Location.Col -= direction
 	}
 	pGame.Put(pGame.FallingBlock)
 }
@@ -285,9 +285,9 @@ func NewBoard(nRows, nCols int) [][]Cell {
 // Put places a block onto the board
 func (pGame *Game) Put(block *Block) {
 	for i := 0; i < NUM_CELLS; i++ {
-		location := Tetrominos[block.blockType][block.orientation][i]
-		newRow := block.location.row + location.row
-		newCol := block.location.col + location.col
+		location := Tetrominos[block.BlockType][block.Orientation][i]
+		newRow := block.Location.Row + location.Row
+		newCol := block.Location.Col + location.Col
 		pGame.Set(newRow, newCol, TC_EMPTY)
 	}
 }
@@ -295,10 +295,10 @@ func (pGame *Game) Put(block *Block) {
 // Clears a block off the board
 func (pGame *Game) Remove(block *Block) {
 	for i := 0; i < NUM_CELLS; i++ {
-		location := Tetrominos[block.blockType][block.orientation][i]
-		newRow := block.location.row + location.row
-		newCol := block.location.col + location.col
-		pGame.Set(newRow, newCol, TypeToCell(block.blockType))
+		location := Tetrominos[block.BlockType][block.Orientation][i]
+		newRow := block.Location.Row + location.Row
+		newCol := block.Location.Col + location.Col
+		pGame.Set(newRow, newCol, TypeToCell(block.BlockType))
 	}
 }
 
@@ -307,8 +307,8 @@ func (pGame *Game) Remove(block *Block) {
 func (pGame *Game) Rotate(direction int) {
 	pGame.Remove(pGame.FallingBlock)
 	for {
-		pGame.FallingBlock.orientation =
-			(pGame.FallingBlock.orientation + direction) % NUM_ORIENTATIONS
+		pGame.FallingBlock.Orientation =
+			(pGame.FallingBlock.Orientation + direction) % NUM_ORIENTATIONS
 
 		// If the new orientation fits, we're done
 		if pGame.Fits(pGame.FallingBlock) {
@@ -316,13 +316,13 @@ func (pGame *Game) Rotate(direction int) {
 		}
 
 		// Otherwise, try moving it to the left to make it fit
-		pGame.FallingBlock.location.col--
+		pGame.FallingBlock.Location.Col--
 		if pGame.Fits(pGame.FallingBlock) {
 			break
 		}
 
 		// Finally, try moving it to the right to make it fit
-		pGame.FallingBlock.location.col += 2
+		pGame.FallingBlock.Location.Col += 2
 		if pGame.Fits(pGame.FallingBlock) {
 			break
 		}
@@ -330,7 +330,7 @@ func (pGame *Game) Rotate(direction int) {
 		// Put it back in its original location and try the next
 		// orientation. Worst case, we come back to the original
 		// orientation and it fits, so this loop will terminate
-		pGame.FallingBlock.location.col--
+		pGame.FallingBlock.Location.Col--
 	}
 	pGame.Put(pGame.FallingBlock)
 }
@@ -413,28 +413,6 @@ func (pGame *Game) Tick(move Move) bool {
 
 	return !gameOver
 
-}
-
-// Returns the Cell corresponding to a Type
-func TypeToCell(typ Type) Cell {
-	switch typ {
-	case TET_I:
-		return TC_CELLI
-	case TET_J:
-		return TC_CELLJ
-	case TET_L:
-		return TC_CELLL
-	case TET_O:
-		return TC_CELLO
-	case TET_S:
-		return TC_CELLS
-	case TET_T:
-		return TC_CELLT
-	case TET_Z:
-		return TC_CELLZ
-	default:
-		return TC_EMPTY
-	}
 }
 
 // WithinBounds returns an error if the specified row or column is
