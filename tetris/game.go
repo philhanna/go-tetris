@@ -319,12 +319,16 @@ func (pGame *Game) Remove(block *Block) {
 }
 
 // Rotate rotates the falling block in either direction (+/-1), given
-// that it fits
+// that it fits. The logic is:
+//
+//  Save (and later restore) the currently falling block.
+
 func (pGame *Game) Rotate(direction int) {
 	pGame.Remove(pGame.FallingBlock)
 	for {
 		pGame.FallingBlock.Orientation =
-			(pGame.FallingBlock.Orientation + direction) % NUM_ORIENTATIONS
+			(pGame.FallingBlock.Orientation + direction + NUM_ORIENTATIONS) % NUM_ORIENTATIONS
+			// (we add 4 to account for negative values of direction)
 
 		// If the new orientation fits, we're done
 		if pGame.Fits(pGame.FallingBlock) {
