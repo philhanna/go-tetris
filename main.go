@@ -75,6 +75,8 @@ func main() {
 		case 'q':
 			running = false
 			move = tetris.TM_NONE
+		case ' ':
+			move = tetris.TM_DROP
 		case 'p':
 			board.Clear()
 			board.Box(0, 0)
