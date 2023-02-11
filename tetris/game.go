@@ -43,6 +43,7 @@ func NewGame(nRows, nCols int) Game {
 
 // Adjust the score for the game, given how many lines were just cleared.
 func (pGame *Game) AdjustScore(linesCleared int) {
+
 	// Note: the array is limited to a maximum of four lines cleared,
 	// which seems OK because that is as big as a tetromino can get
 	lineMultiplier := []int{0, 40, 100, 300, 1200}
@@ -57,9 +58,10 @@ func (pGame *Game) AdjustScore(linesCleared int) {
 	// Update the lines remaining variable.
 	if linesCleared >= pGame.LinesRemaining {
 		pGame.Level = min(MAX_LEVEL, pGame.Level+1)
+		linesCleared = pGame.LinesRemaining
 		pGame.LinesRemaining = LINES_PER_LEVEL - linesCleared
 	} else {
-		pGame.LinesRemaining = linesCleared
+		pGame.LinesRemaining -= linesCleared
 	}
 }
 
@@ -108,7 +110,7 @@ func (pGame *Game) DoGravityTick() {
 		pGame.Remove(pGame.FallingBlock)
 		pGame.FallingBlock.Location.Row++
 		if pGame.Fits(pGame.FallingBlock) {
-			pGame.TicksRemaining = GRAVITY_LEVEL[pGame.Level]*5
+			pGame.TicksRemaining = GRAVITY_LEVEL[pGame.Level]
 		} else {
 			pGame.FallingBlock.Location.Row--
 			pGame.Put(pGame.FallingBlock)
