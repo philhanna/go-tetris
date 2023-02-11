@@ -13,6 +13,8 @@ const COLS_PER_CELL = 2
 // Main tetris game
 func main() {
 
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
 	var (
 		tg      *tetris.Game
 		running = true
@@ -26,11 +28,11 @@ func main() {
 	}
 
 	// Deinitialize curses when this function is done
-	defer gc.End()
 	defer stdscr.Clear()
+	defer gc.End()
 
 	gc.CBreak(true)     // pass key presses to program, but not signals
-	gc.Echo(false)      // don't echo key presses to screen
+	gc.Echo(false)      // don't echo key presses to screen	
 	stdscr.Keypad(true) // allow arrow keys
 	stdscr.Timeout(0)   // no blocking on getch()
 	gc.Cursor(0)        // cursor invisible
@@ -53,7 +55,9 @@ func main() {
 		running = tg.Tick(move)
 		DisplayBoard(board, tg)
 		DisplayPiece(next, *tg.NextBlock)
-		DisplayPiece(hold, *tg.StoredBlock)
+		if tg.StoredBlock != nil {
+			DisplayPiece(hold, *tg.StoredBlock)
+		}
 		DisplayScore(score, tg)
 		gc.Update()
 		Sleep(10)

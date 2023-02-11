@@ -288,7 +288,8 @@ func (pGame *Game) Put(block *Block) {
 		location := Tetrominos[block.BlockType][block.Orientation][i]
 		newRow := block.Location.Row + location.Row
 		newCol := block.Location.Col + location.Col
-		pGame.Set(newRow, newCol, TC_EMPTY)
+		newCell := TypeToCell(block.BlockType)
+		pGame.Set(newRow, newCol, newCell)
 	}
 }
 
@@ -298,7 +299,8 @@ func (pGame *Game) Remove(block *Block) {
 		location := Tetrominos[block.BlockType][block.Orientation][i]
 		newRow := block.Location.Row + location.Row
 		newCol := block.Location.Col + location.Col
-		pGame.Set(newRow, newCol, TypeToCell(block.BlockType))
+		
+		pGame.Set(newRow, newCol, TC_EMPTY)
 	}
 }
 
@@ -410,8 +412,9 @@ func (pGame *Game) Tick(move Move) bool {
 
 	// Return whether the game will continue (NOT whether it's over)
 	gameOver := pGame.GameOver()
+	notGameOver := !gameOver
 
-	return !gameOver
+	return notGameOver
 
 }
 
