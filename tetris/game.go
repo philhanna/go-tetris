@@ -86,19 +86,33 @@ func (pGame *Game) CheckLines() int {
 	return nLines
 }
 
-// DoGravityTick does a single game tick: process gravity, user input,
-// and score.  Return true if the game is still running, false if it is
-// over.
+// DoGravityTick ticks gravity, and moves the block down if gravity should act.
+//
+//	 With each tick of the clock, ticksRemaining loses one tick.
+//	 When it is finally zero:
+//	     Save and later restore the currently falling block.
+//	     Move the row down one (actually row++).
+//	     See if it still fits.
+//			If so:
+//				Reset ticks remaining to the gravity level for this level.
+//			Otherwise:
+//				Move the block up one (it does not fit now).
+//				Restore the falling block (now at the bottom).
+//				Create new falling and next blocks.
+//			Restore the falling block (which will be a new one if
+//			the old one is at the bottom).
+//
 func (pGame *Game) DoGravityTick() {
 	pGame.TicksRemaining--
 	if pGame.TicksRemaining <= 0 {
 		pGame.Remove(pGame.FallingBlock)
 		pGame.FallingBlock.Location.Row++
 		if pGame.Fits(pGame.FallingBlock) {
-			pGame.TicksRemaining = GRAVITY_LEVEL[pGame.Level]
+			pGame.TicksRemaining = GRAVITY_LEVEL[pGame.Level]*5
 		} else {
 			pGame.FallingBlock.Location.Row--
 			pGame.Put(pGame.FallingBlock)
+			pGame.MakeNewBlocks()
 		}
 		pGame.Put(pGame.FallingBlock)
 	}
@@ -299,7 +313,7 @@ func (pGame *Game) Remove(block *Block) {
 		location := Tetrominos[block.BlockType][block.Orientation][i]
 		newRow := block.Location.Row + location.Row
 		newCol := block.Location.Col + location.Col
-		
+
 		pGame.Set(newRow, newCol, TC_EMPTY)
 	}
 }
