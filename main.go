@@ -54,7 +54,8 @@ func main() {
 		DisplayBoard(board, tg)
 		DisplayPiece(next, *tg.NextBlock)
 		DisplayPiece(hold, *tg.StoredBlock)
-		// displayScore(score, tg)
+		DisplayScore(score, tg)
+		// TODO - handle the moves
 	}
 
 	// TODO: Remove this section after all variables are referenced.
@@ -129,5 +130,15 @@ func DisplayPiece(w *gc.Window, block tetris.Block) {
 		cell := tetris.TypeToCell(block.BlockType)	
 		AddBlock(w, cell)
 	}
+	w.NoutRefresh()	
+}
+
+// DisplayScore displays score information in a dedicated window.
+func DisplayScore(w *gc.Window, tg *tetris.Game) {
+	w.Clear()
+	w.Box(0, 0)
+	w.Printf("Score\n%d\n", tg.Points);
+	w.Printf("Level\n%d\n", tg.Level);
+	w.Printf("Lines\n%d\n", tg.LinesRemaining);
 	w.NoutRefresh()	
 }
