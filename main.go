@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
-
-	// "os"
 	"tetris/tetris"
+	"time"
 
 	gc "github.com/rthornton128/goncurses"
 )
@@ -14,7 +12,7 @@ const COLS_PER_CELL = 2
 
 // Main tetris game
 func main() {
-	
+
 	var (
 		tg      *tetris.Game
 		running = true
@@ -26,6 +24,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Deinitialize curses when this function is done
 	defer gc.End()
 	defer stdscr.Clear()
 
@@ -55,15 +55,39 @@ func main() {
 		DisplayPiece(next, *tg.NextBlock)
 		DisplayPiece(hold, *tg.StoredBlock)
 		DisplayScore(score, tg)
-		// TODO - handle the moves
-	}
+		gc.Update()
+		Sleep(10)
 
-	// TODO: Remove this section after all variables are referenced.
-	if false {
-		fmt.Println(next)
-		fmt.Println(hold)
-		fmt.Println(score)
-		fmt.Println(move)
+		ch := stdscr.GetChar()
+		switch ch {
+		case gc.KEY_LEFT:
+			move = tetris.TM_LEFT
+		case gc.KEY_RIGHT:
+			move = tetris.TM_RIGHT
+		case gc.KEY_UP:
+			move = tetris.TM_CLOCK
+		case gc.KEY_DOWN:
+			move = tetris.TM_COUNTER
+		case 'q':
+			running = false
+			move = tetris.TM_NONE
+		case 'p':
+			board.Clear()
+			board.Box(0, 0)
+			y := tg.NRows / 2
+			x := (tg.NCols*COLS_PER_CELL - 6) / 2
+			board.Move(y, x)
+			board.Print("PAUSED")
+			board.Refresh()
+			stdscr.Timeout(-1)
+			stdscr.GetChar()
+			stdscr.Timeout(0)
+			move = tetris.TM_NONE
+		case 'h':
+			move = tetris.TM_HOLD
+		default:
+			move = tetris.TM_NONE
+		}
 	}
 }
 
@@ -125,20 +149,26 @@ func DisplayPiece(w *gc.Window, block tetris.Block) {
 	for b := 0; b < tetris.NUM_CELLS; b++ {
 		location := tetris.Tetrominos[block.BlockType][block.Orientation][b]
 		y := location.Row + 1
-		x := location.Col * COLS_PER_CELL + 1
+		x := location.Col*COLS_PER_CELL + 1
 		w.Move(y, x)
-		cell := tetris.TypeToCell(block.BlockType)	
+		cell := tetris.TypeToCell(block.BlockType)
 		AddBlock(w, cell)
 	}
-	w.NoutRefresh()	
+	w.NoutRefresh()
 }
 
 // DisplayScore displays score information in a dedicated window.
 func DisplayScore(w *gc.Window, tg *tetris.Game) {
 	w.Clear()
 	w.Box(0, 0)
-	w.Printf("Score\n%d\n", tg.Points);
-	w.Printf("Level\n%d\n", tg.Level);
-	w.Printf("Lines\n%d\n", tg.LinesRemaining);
-	w.NoutRefresh()	
+	w.Printf("Score\n%d\n", tg.Points)
+	w.Printf("Level\n%d\n", tg.Level)
+	w.Printf("Lines\n%d\n", tg.LinesRemaining)
+	w.NoutRefresh()
+}
+
+// Sleep sleeps for the specified number of milliseconds
+func Sleep(millis int) {
+	n := time.Duration(millis) * time.Millisecond
+	time.Sleep(n)
 }
