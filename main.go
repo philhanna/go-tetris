@@ -110,13 +110,18 @@ func InitColors() {
 }
 
 // DisplayBoard prints the tetris board onto the ncurses window.
+// First, it draws a box around the border of the window.
+// Then, in a nested loop of all columns within all rows:
+// 1. At the beginning of each row, moves the cursor to the row below
+// 2. For each column, gets the cell on the board at the row, col
+// 
 func DisplayBoard(w *gc.Window, tg *tetris.Game) {
 	w.Box(0, 0)
 	for i := 0; i < tg.NRows; i++ {
 		w.Move(1+i, 1)
 		for j := 0; j < tg.NCols; j++ {
 			cell := tg.Get(i, j)
-			if cell == tetris.TC_EMPTY {
+			if cell != tetris.TC_EMPTY {
 				AddBlock(w, cell)
 			} else {
 				AddEmpty(w)
