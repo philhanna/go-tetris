@@ -95,6 +95,12 @@ func main() {
 			move = tetris.TM_NONE
 		}
 	}
+
+	// Display end of game message
+	stdscr.Printf("Game over!\n")
+	stdscr.Printf("You finished with %d points on level %d.\n", tg.Points, tg.Level)
+	stdscr.Timeout(-1)
+	stdscr.GetChar()
 }
 
 // InitColors does the NCURSES initialization steps for color blocks.
