@@ -97,6 +97,7 @@ func main() {
 	}
 
 	// Display end of game message
+	stdscr.Move(24, 0)
 	stdscr.Printf("Game over!\n")
 	stdscr.Printf("You finished with %d points on level %d.\n", tg.Points, tg.Level)
 	stdscr.Timeout(-1)
