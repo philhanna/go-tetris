@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Removed development artifacts
 - Refactored code
 
-## [1.0.0] - 2023-02-11
+## [v1.0.0] - 2023-02-11
 - First workable version
 
-[Unreleased]: https://github.com/philhanna/go-tetris/compare/1.0.0..HEAD
-[1.0.0]: https://github.com/philhanna/go-tetris/compare/6501bb1..1.0.0
+[Unreleased]: https://github.com/philhanna/go-tetris/compare/v1.0.0..HEAD
+[v1.0.0]: https://github.com/philhanna/go-tetris/compare/6501bb1..v1.0.0
