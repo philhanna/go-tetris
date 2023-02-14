@@ -1,7 +1,6 @@
 package tetris
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -21,12 +20,6 @@ func getTestGame(nRows, nCols int) *Game {
 		pGame.Board[row][nCols-1] = TC_CELLO
 	}
 	return &pGame
-}
-
-func TestPrintGame_String(t *testing.T) {
-	t.Skip("Only for debugging")
-	pGame := getTestGame(4, 12)
-	fmt.Println(pGame.String())
 }
 
 func TestGameGetSet(t *testing.T) {

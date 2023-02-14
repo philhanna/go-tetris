@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"strings"
 	"time"
 )
 
@@ -343,44 +342,6 @@ func (pGame *Game) ShiftLines(r int) {
 			pGame.Set(i, j, TC_EMPTY)
 		}
 	}
-}
-
-// String returns a string representation of the game object
-func (pGame *Game) String() string {
-
-	var sb strings.Builder
-
-	sb.WriteString("Game:\n")
-	sb.WriteString(fmt.Sprintf("  nRows: %d\n", pGame.NRows))
-	sb.WriteString(fmt.Sprintf("  nCols: %d\n", pGame.NCols))
-	sb.WriteString("  board: {\n")
-
-	// Write each row
-	for _, cells := range pGame.Board {
-		sb.WriteString("    {")
-		// Write each column in this row
-		for _, cell := range cells {
-			sb.WriteString(cell.String())
-		}
-		sb.WriteString("}\n")
-	}
-	sb.WriteString("  }\n")
-	sb.WriteString(fmt.Sprintf("  points: %d\n", pGame.Points))
-	sb.WriteString(fmt.Sprintf("  level: %d\n", pGame.Level))
-
-	blockString := func(p *Block) string {
-		if p != nil {
-			return p.String()
-		}
-		return "<nil>"
-	}
-	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.FallingBlock)))
-	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.NextBlock)))
-	sb.WriteString(fmt.Sprintf("  ticksRemaining: %d\n", pGame.TicksRemaining))
-	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.LinesRemaining))
-
-	s := sb.String()
-	return s
 }
 
 // Do a single game tick: process gravity, user input, and score.
