@@ -74,16 +74,7 @@ func main() {
 		case ' ':
 			move = tetris.TM_DROP
 		case 'p':
-			board.Clear()
-			board.Box(0, 0)
-			y := tg.NRows / 2
-			x := (tg.NCols*COLS_PER_CELL - 6) / 2
-			board.Move(y, x)
-			board.Print("PAUSED")
-			board.Refresh()
-			stdscr.Timeout(-1)
-			stdscr.GetChar()
-			stdscr.Timeout(0)
+			doPause(board, tg, stdscr)
 			move = tetris.TM_NONE
 		default:
 			move = tetris.TM_NONE
@@ -96,6 +87,20 @@ func main() {
 	stdscr.Printf("You finished with %d points on level %d.\n", tg.Points, tg.Level)
 	stdscr.Timeout(-1)
 	stdscr.GetChar()
+}
+
+// Handles a pause request
+func doPause(win *gc.Window, tg *tetris.Game, stdscr *gc.Window) {
+	win.Clear()
+	win.Box(0, 0)
+	y := tg.NRows / 2
+	x := (tg.NCols*COLS_PER_CELL - 6) / 2
+	win.Move(y, x)
+	win.Print("PAUSED")
+	win.Refresh()
+	stdscr.Timeout(-1)
+	stdscr.GetChar()
+	stdscr.Timeout(0)
 }
 
 // InitColors does the NCURSES initialization steps for color blocks.
@@ -116,67 +121,67 @@ func InitColors() {
 // 1. At the beginning of each row, moves the cursor to the row below
 // 2. For each column, gets the cell on the board at the row, col
 // 
-func DisplayBoard(w *gc.Window, tg *tetris.Game) {
-	w.Box(0, 0)
+func DisplayBoard(win *gc.Window, tg *tetris.Game) {
+	win.Box(0, 0)
 	for i := 0; i < tg.NRows; i++ {
-		w.Move(1+i, 1)
+		win.Move(1+i, 1)
 		for j := 0; j < tg.NCols; j++ {
 			cell := tg.Get(i, j)
 			if cell != tetris.TC_EMPTY {
-				AddBlock(w, cell)
+				AddBlock(win, cell)
 			} else {
-				AddEmpty(w)
+				AddEmpty(win)
 			}
 		}
 	}
-	w.NoutRefresh()
+	win.NoutRefresh()
 }
 
 // AddBlock draws a cell with the right color
-func AddBlock(w *gc.Window, cell tetris.Cell) {
+func AddBlock(win *gc.Window, cell tetris.Cell) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
 		ach = ' ' | gc.A_REVERSE | gc.ColorPair(int16(cell))
-		w.AddChar(ach)
+		win.AddChar(ach)
 	}
 }
 
 // AddEmpty erases a cell
-func AddEmpty(w *gc.Window) {
+func AddEmpty(win *gc.Window) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
 		ach = ' '
-		w.AddChar(ach)
+		win.AddChar(ach)
 	}
 }
 
 // DisplayPiece displays a tetris piece in a dedicated window.
-func DisplayPiece(w *gc.Window, block tetris.Block) {
-	w.Clear()
-	w.Box(0, 0)
+func DisplayPiece(win *gc.Window, block tetris.Block) {
+	win.Clear()
+	win.Box(0, 0)
 	if block.BlockType == -1 {
-		w.NoutRefresh()
+		win.NoutRefresh()
 		return
 	}
 	for b := 0; b < tetris.NUM_CELLS; b++ {
 		location := tetris.Tetrominos[block.BlockType][block.Orientation][b]
 		y := location.Row + 1
 		x := location.Col*COLS_PER_CELL + 1
-		w.Move(y, x)
+		win.Move(y, x)
 		cell := tetris.TypeToCell(block.BlockType)
-		AddBlock(w, cell)
+		AddBlock(win, cell)
 	}
-	w.NoutRefresh()
+	win.NoutRefresh()
 }
 
 // DisplayScore displays score information in a dedicated window.
-func DisplayScore(w *gc.Window, tg *tetris.Game) {
-	w.Clear()
-	w.Box(0, 0)
-	w.Printf("Score\n%d\n", tg.Points)
-	w.Printf("Level\n%d\n", tg.Level)
-	w.Printf("Lines\n%d\n", tg.LinesRemaining)
-	w.NoutRefresh()
+func DisplayScore(win *gc.Window, tg *tetris.Game) {
+	win.Clear()
+	win.Box(0, 0)
+	win.Printf("Score\n%d\n", tg.Points)
+	win.Printf("Level\n%d\n", tg.Level)
+	win.Printf("Lines\n%d\n", tg.LinesRemaining)
+	win.NoutRefresh()
 }
 
 // Sleep sleeps for the specified number of milliseconds
