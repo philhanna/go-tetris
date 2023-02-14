@@ -54,7 +54,7 @@ main:
 		// output to the terminal
 		win.Erase()
 		win.NoutRefresh()
-		// Move the window to it's new location (if any) and redraw it
+		// Move the window to its new location (if any) and redraw it
 		win.MoveWindow(y, x)
 		win.Box(gc.ACS_VLINE, gc.ACS_HLINE)
 		win.NoutRefresh()
