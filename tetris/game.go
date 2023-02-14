@@ -22,10 +22,8 @@ type Game struct {
 
 	// Falling block is the one currently going down.
 	// Next block is the one that will be FallingBlock after this one.
-	// Stored is the block that you can swap out.
 	FallingBlock *Block
 	NextBlock    *Block
-	StoredBlock  *Block
 
 	// Number of game ticks until the block will move down
 	TicksRemaining int
@@ -193,36 +191,7 @@ func (pGame *Game) HandleMove(move Move) {
 		pGame.Rotate(1)
 	case TM_COUNTER:
 		pGame.Rotate(-1)
-	case TM_HOLD:
-		pGame.Hold()
 	}
-}
-
-// Swap the falling block with the block in the hold buffer.
-func (pGame *Game) Hold() {
-	pGame.Remove(pGame.FallingBlock)
-	if pGame.StoredBlock == nil {
-
-		// There is no stored block. Just copy the falling one.
-
-		pGame.StoredBlock = pGame.FallingBlock
-	} else {
-
-		// There is a stored block. Swap with the falling one.
-
-		typ := pGame.FallingBlock.BlockType
-		ori := pGame.FallingBlock.Orientation
-
-		pGame.FallingBlock.BlockType = pGame.StoredBlock.BlockType
-		pGame.FallingBlock.Orientation = pGame.StoredBlock.Orientation
-
-		pGame.StoredBlock.BlockType = typ
-		pGame.StoredBlock.Orientation = ori
-		for !pGame.Fits(pGame.FallingBlock) {
-			pGame.FallingBlock.Location.Row--
-		}
-	}
-	pGame.Put(pGame.FallingBlock)
 }
 
 // Init initializes the data in a Game object
@@ -235,7 +204,6 @@ func (pGame *Game) Init(nRows, nCols int) {
 	pGame.Points = 0
 	pGame.Level = 0
 	pGame.NextBlock = nil
-	pGame.StoredBlock = nil
 	pGame.TicksRemaining = GRAVITY_LEVEL[0]
 	pGame.LinesRemaining = LINES_PER_LEVEL
 
@@ -408,7 +376,6 @@ func (pGame *Game) String() string {
 	}
 	sb.WriteString(fmt.Sprintf("  falling: %s\n", blockString(pGame.FallingBlock)))
 	sb.WriteString(fmt.Sprintf("  next:    %s\n", blockString(pGame.NextBlock)))
-	sb.WriteString(fmt.Sprintf("  stored:  %s\n", blockString(pGame.StoredBlock)))
 	sb.WriteString(fmt.Sprintf("  ticksRemaining: %d\n", pGame.TicksRemaining))
 	sb.WriteString(fmt.Sprintf("  linesRemaining: %d", pGame.LinesRemaining))
 

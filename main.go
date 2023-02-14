@@ -47,7 +47,6 @@ func main() {
 	w := COLS_PER_CELL * (tg.NCols + 1)
 	board, _ := gc.NewWindow(h, w, 0, 0)
 	next, _ := gc.NewWindow(6, 10, 0, w+3)
-	hold, _ := gc.NewWindow(6, 10, 7, w+3)
 	score, _ := gc.NewWindow(6, 10, 14, w+3)
 
 	// Game loop
@@ -55,9 +54,6 @@ func main() {
 		running = tg.Tick(move)
 		DisplayBoard(board, tg)
 		DisplayPiece(next, *tg.NextBlock)
-		if tg.StoredBlock != nil {
-			DisplayPiece(hold, *tg.StoredBlock)
-		}
 		DisplayScore(score, tg)
 		gc.Update()
 		Sleep(10)
