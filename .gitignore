@@ -1,2 +1,4 @@
 *.swp
 *.code-workspace
+.vscode/*
+examples/*
