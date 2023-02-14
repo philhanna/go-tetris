@@ -85,8 +85,6 @@ func main() {
 			stdscr.GetChar()
 			stdscr.Timeout(0)
 			move = tetris.TM_NONE
-		case 'h':
-			move = tetris.TM_HOLD
 		default:
 			move = tetris.TM_NONE
 		}
