@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"tetris/tetris"
+	"tetris"
 	"time"
 
 	gc "github.com/rthornton128/goncurses"
@@ -76,6 +76,9 @@ func main() {
 		case 'p':
 			doPause(board, tg, stdscr)
 			move = tetris.TM_NONE
+		case 'b':
+			doBoss(board, tg, stdscr)
+			move = tetris.TM_NONE
 		default:
 			move = tetris.TM_NONE
 		}
@@ -101,6 +104,35 @@ func doPause(win *gc.Window, tg *tetris.Game, stdscr *gc.Window) {
 	stdscr.Timeout(-1)
 	stdscr.GetChar()
 	stdscr.Timeout(0)
+}
+
+// Handles a boss request
+func doBoss(win *gc.Window, tg *tetris.Game, stdscr *gc.Window) {
+	stdscr.Clear()
+	// insert boss here
+	const bossImage = `
+user@workstation-312:~/Documents/presentation $ ls -l
+total 528
+drwxr-xr-x 2 user users   4096 Jun  9 17:05 .
+drwxr-xr-x 4 user users   4096 Jun 10 09:52 ..
+-rw-r--r-- 1 user users  88583 Jun  9 14:13 figure1.png
+-rw-r--r-- 1 user users  65357 Jun  9 15:40 figure2.png
+-rw-r--r-- 1 user users   4469 Jun  9 16:17 presentation.aux
+-rw-r--r-- 1 user users  42858 Jun  9 16:17 presentation.log
+-rw-r--r-- 1 user users   2516 Jun  9 16:17 presentation.nav
+-rw-r--r-- 1 user users    183 Jun  9 16:17 presentation.out
+-rw-r--r-- 1 user users 349607 Jun  9 16:17 presentation.pdf
+-rw-r--r-- 1 user users      0 Jun  9 16:17 presentation.snm
+-rw-r--r-- 1 user users   9284 Jun  9 17:05 presentation.tex
+-rw-r--r-- 1 user users    229 Jun  9 16:17 presentation.toc
+user@workstation-312:~/Documents/presentation $
+`
+	stdscr.Print(bossImage)
+	stdscr.Refresh()
+	stdscr.Timeout(-1)
+	stdscr.GetChar()
+	stdscr.Timeout(0)
+	stdscr.Clear()
 }
 
 // InitColors does the NCURSES initialization steps for color blocks.
