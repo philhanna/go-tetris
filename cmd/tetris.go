@@ -189,7 +189,7 @@ func AddEmpty(win *gc.Window) {
 
 // DisplayPiece displays a tetris piece in a dedicated window.
 func DisplayPiece(win *gc.Window, block tetris.Block) {
-	win.Clear()
+	win.Erase()
 	win.Box(0, 0)
 	if block.BlockType == -1 {
 		win.NoutRefresh()
@@ -208,7 +208,7 @@ func DisplayPiece(win *gc.Window, block tetris.Block) {
 
 // DisplayScore displays score information in a dedicated window.
 func DisplayScore(win *gc.Window, tg *tetris.Game) {
-	win.Clear()
+	win.Erase()
 	win.Box(0, 0)
 	win.Printf("Score\n%d\n", tg.Points)
 	win.Printf("Level\n%d\n", tg.Level)
