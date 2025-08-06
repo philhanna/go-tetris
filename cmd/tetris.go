@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/philhanna/go-tetris/model"
 	"log"
+	"tetris/model"
 	"time"
 
 	gc "github.com/rthornton128/goncurses"
@@ -152,7 +152,7 @@ func InitColors() {
 // Then, in a nested loop of all columns within all rows:
 // 1. At the beginning of each row, moves the cursor to the row below
 // 2. For each column, gets the cell on the board at the row, col
-func DisplayBoard(win *gc.Window, tg *tetris.Game) {
+func DisplayBoard(win *gc.Window, tg *model.Game) {
 	win.Box(0, 0)
 	for i := 0; i < tg.NRows; i++ {
 		win.Move(1+i, 1)
@@ -169,7 +169,7 @@ func DisplayBoard(win *gc.Window, tg *tetris.Game) {
 }
 
 // AddBlock draws a cell with the right color
-func AddBlock(win *gc.Window, cell tetris.Cell) {
+func AddBlock(win *gc.Window, cell model.Cell) {
 	var ach gc.Char
 	for i := 0; i < COLS_PER_CELL; i++ {
 		ach = ' ' | gc.A_REVERSE | gc.ColorPair(int16(cell))
@@ -187,7 +187,7 @@ func AddEmpty(win *gc.Window) {
 }
 
 // DisplayPiece displays a tetris piece in a dedicated window.
-func DisplayPiece(win *gc.Window, block tetris.Block) {
+func DisplayPiece(win *gc.Window, block model.Block) {
 	win.Erase()
 	win.Box(0, 0)
 	if block.BlockType == -1 {
