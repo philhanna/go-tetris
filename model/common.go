@@ -1,4 +1,4 @@
-package tetris
+package model
 
 // Number of cells in a tetromino
 const NUM_CELLS = 4

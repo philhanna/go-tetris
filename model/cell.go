@@ -1,4 +1,4 @@
-package tetris
+package model
 
 // Cell is an enumeration of 1x1 blocks within a tetris board.
 type Cell uint8

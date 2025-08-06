@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/philhanna/go-tetris/model"
 	"log"
-	"tetris"
 	"time"
 
 	gc "github.com/rthornton128/goncurses"
@@ -16,9 +16,9 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
 	var (
-		tg      *tetris.Game
+		tg      *model.Game
 		running = true
-		move    = tetris.TM_NONE
+		move    = model.TM_NONE
 	)
 
 	// NCURSES initialization
@@ -32,14 +32,14 @@ func main() {
 	defer gc.End()
 
 	gc.CBreak(true)     // pass key presses to program, but not signals
-	gc.Echo(false)      // don't echo key presses to screen	
+	gc.Echo(false)      // don't echo key presses to screen
 	stdscr.Keypad(true) // allow arrow keys
 	stdscr.Timeout(0)   // no blocking on getch()
 	gc.Cursor(0)        // cursor invisible
 	InitColors()        // setup tetris colors
 
 	// Now we can create the game
-	newGame := tetris.NewGame(22, 10)
+	newGame := model.NewGame(22, 10)
 	tg = &newGame
 
 	// Create windows for each section of the interface.
@@ -61,26 +61,26 @@ func main() {
 		ch := stdscr.GetChar()
 		switch ch {
 		case gc.KEY_LEFT:
-			move = tetris.TM_LEFT
+			move = model.TM_LEFT
 		case gc.KEY_RIGHT:
-			move = tetris.TM_RIGHT
+			move = model.TM_RIGHT
 		case gc.KEY_UP:
-			move = tetris.TM_CLOCK
+			move = model.TM_CLOCK
 		case gc.KEY_DOWN:
-			move = tetris.TM_COUNTER
+			move = model.TM_COUNTER
 		case 'q':
 			running = false
-			move = tetris.TM_NONE
+			move = model.TM_NONE
 		case ' ':
-			move = tetris.TM_DROP
+			move = model.TM_DROP
 		case 'p':
 			doPause(board, tg, stdscr)
-			move = tetris.TM_NONE
+			move = model.TM_NONE
 		case 'b':
 			doBoss(board, tg, stdscr)
-			move = tetris.TM_NONE
+			move = model.TM_NONE
 		default:
-			move = tetris.TM_NONE
+			move = model.TM_NONE
 		}
 	}
 
@@ -93,7 +93,7 @@ func main() {
 }
 
 // Handles a pause request
-func doPause(win *gc.Window, tg *tetris.Game, stdscr *gc.Window) {
+func doPause(win *gc.Window, tg *model.Game, stdscr *gc.Window) {
 	win.Clear()
 	win.Box(0, 0)
 	y := tg.NRows / 2
@@ -107,7 +107,7 @@ func doPause(win *gc.Window, tg *tetris.Game, stdscr *gc.Window) {
 }
 
 // Handles a boss request
-func doBoss(win *gc.Window, tg *tetris.Game, stdscr *gc.Window) {
+func doBoss(win *gc.Window, tg *model.Game, stdscr *gc.Window) {
 	stdscr.Clear()
 	// insert boss here
 	const bossImage = `
@@ -138,13 +138,13 @@ user@workstation-312:~/Documents/presentation $
 // InitColors does the NCURSES initialization steps for color blocks.
 func InitColors() {
 	gc.StartColor()
-	gc.InitPair(int16(tetris.TC_CELLI), gc.C_CYAN, gc.C_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLJ), gc.C_BLUE, gc.C_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLL), gc.C_WHITE, gc.C_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLO), gc.C_YELLOW, gc.C_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLS), gc.C_GREEN, gc.C_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLT), gc.C_MAGENTA, gc.C_BLACK)
-	gc.InitPair(int16(tetris.TC_CELLZ), gc.C_RED, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLI), gc.C_CYAN, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLJ), gc.C_BLUE, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLL), gc.C_WHITE, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLO), gc.C_YELLOW, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLS), gc.C_GREEN, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLT), gc.C_MAGENTA, gc.C_BLACK)
+	gc.InitPair(int16(model.TC_CELLZ), gc.C_RED, gc.C_BLACK)
 }
 
 // DisplayBoard prints the tetris board onto the ncurses window.
@@ -152,14 +152,13 @@ func InitColors() {
 // Then, in a nested loop of all columns within all rows:
 // 1. At the beginning of each row, moves the cursor to the row below
 // 2. For each column, gets the cell on the board at the row, col
-// 
 func DisplayBoard(win *gc.Window, tg *tetris.Game) {
 	win.Box(0, 0)
 	for i := 0; i < tg.NRows; i++ {
 		win.Move(1+i, 1)
 		for j := 0; j < tg.NCols; j++ {
 			cell := tg.Get(i, j)
-			if cell != tetris.TC_EMPTY {
+			if cell != model.TC_EMPTY {
 				AddBlock(win, cell)
 			} else {
 				AddEmpty(win)
@@ -195,19 +194,19 @@ func DisplayPiece(win *gc.Window, block tetris.Block) {
 		win.NoutRefresh()
 		return
 	}
-	for b := 0; b < tetris.NUM_CELLS; b++ {
-		location := tetris.Tetrominos[block.BlockType][block.Orientation][b]
+	for b := 0; b < model.NUM_CELLS; b++ {
+		location := model.Tetrominos[block.BlockType][block.Orientation][b]
 		y := location.Row + 1
 		x := location.Col*COLS_PER_CELL + 1
 		win.Move(y, x)
-		cell := tetris.TypeToCell(block.BlockType)
+		cell := model.TypeToCell(block.BlockType)
 		AddBlock(win, cell)
 	}
 	win.NoutRefresh()
 }
 
 // DisplayScore displays score information in a dedicated window.
-func DisplayScore(win *gc.Window, tg *tetris.Game) {
+func DisplayScore(win *gc.Window, tg *model.Game) {
 	win.Erase()
 	win.Box(0, 0)
 	win.Printf("Score\n%d\n", tg.Points)

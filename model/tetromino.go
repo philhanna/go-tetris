@@ -1,4 +1,4 @@
-package tetris
+package model
 
 // Tetrominio is an array of four tetris shapes, one for each of its
 // orientations. Each shape is a 4x4 matrix of locations that are

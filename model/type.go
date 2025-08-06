@@ -1,4 +1,4 @@
-package tetris
+package model
 
 // Type is an enumeration of the type/shape of a tetromino, not
 // including orientation.

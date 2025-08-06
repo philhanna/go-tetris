@@ -1,4 +1,4 @@
-package tetris
+package model
 
 // Move is an enumeration of all possible moves to give as input
 // to the game
