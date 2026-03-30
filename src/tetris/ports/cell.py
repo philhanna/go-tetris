@@ -4,6 +4,8 @@ from enum import IntEnum
 
 
 class Cell(IntEnum):
+    """Enumeration of board cell values, including empty and tetromino cells."""
+
     EMPTY = 0
     CELLI = 1
     CELLJ = 2
@@ -14,6 +16,8 @@ class Cell(IntEnum):
     CELLZ = 7
 
     def __str__(self) -> str:
+        """Return the one-character display representation for the cell."""
+        # Keep rendering symbols centralized with the enum itself.
         return {
             Cell.EMPTY: ".",
             Cell.CELLI: "I",

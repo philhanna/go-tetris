@@ -4,6 +4,8 @@ from enum import IntEnum
 
 
 class Move(IntEnum):
+    """Enumeration of all supported player input actions."""
+
     LEFT = 0
     RIGHT = 1
     CLOCK = 2

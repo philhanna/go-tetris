@@ -4,6 +4,8 @@ from tetris.ports import Cell
 
 
 def get_test_game(n_rows: int, n_cols: int) -> Game:
+    """Create a game with a border of occupied cells for fixture-style testing."""
+    # Build a deterministic board shape that mimics walls.
     game = Game(n_rows, n_cols)
     game.board = new_board(n_rows, n_cols)
     for col in range(n_cols):
@@ -16,12 +18,16 @@ def get_test_game(n_rows: int, n_cols: int) -> Game:
 
 
 def test_game_get_set() -> None:
+    """Verify that setting a cell can be read back at the same coordinate."""
+    # Exercise the basic board read/write API.
     game = get_test_game(22, 10)
     game.set(3, 5, Cell.CELLJ)
     assert game.get(3, 5) == Cell.CELLJ
 
 
 def test_game_within_bounds() -> None:
+    """Verify bounds checking across representative in/out coordinates."""
+    # Cover edge and out-of-range coordinates for both axes.
     n_rows = 22
     n_cols = 10
     tests = [

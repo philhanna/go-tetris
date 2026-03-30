@@ -5,6 +5,8 @@ from tetris.ports.tetromino_type import TetrominoType
 
 
 def type_to_cell(typ: TetrominoType) -> Cell:
+    """Map a tetromino type to its corresponding board cell value."""
+    # Keep cell mapping in one place to avoid duplicated conversion logic.
     return {
         TetrominoType.I: Cell.CELLI,
         TetrominoType.J: Cell.CELLJ,

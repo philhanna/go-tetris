@@ -4,6 +4,8 @@ from enum import IntEnum
 
 
 class TetrominoType(IntEnum):
+    """Enumeration of the seven tetromino shapes."""
+
     I = 0
     J = 1
     L = 2
@@ -13,6 +15,8 @@ class TetrominoType(IntEnum):
     Z = 6
 
     def __str__(self) -> str:
+        """Return the one-character display representation for the shape."""
+        # Match canonical Tetris piece letters.
         return {
             TetrominoType.I: "I",
             TetrominoType.J: "J",

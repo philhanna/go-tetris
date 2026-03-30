@@ -16,9 +16,13 @@ COLS_PER_CELL = 2
 
 @dataclass
 class CursesInputAdapter(InputPort):
+    """Reads keyboard input from a curses window and maps to game moves."""
+
     stdscr: curses.window
 
     def read_move(self) -> Move:
+        """Read one keypress and convert it into a domain Move value."""
+        # Map low-level key events to high-level move commands.
         ch = self.stdscr.getch()
         if ch == curses.KEY_LEFT:
             return Move.LEFT
@@ -37,24 +41,34 @@ class CursesInputAdapter(InputPort):
 
 @dataclass
 class CursesTimingAdapter(TimingPort):
+    """Timing port implementation based on wall-clock sleep."""
+
     def sleep_millis(self, millis: int) -> None:
+        """Pause execution for the requested number of milliseconds."""
+        # Convert integer milliseconds into seconds for time.sleep.
         time.sleep(millis / 1000.0)
 
 
 @dataclass
 class CursesOutputAdapter(OutputPort):
+    """Renders game state and messages to curses-backed windows."""
+
     stdscr: curses.window
     board_win: curses.window
     next_win: curses.window
     score_win: curses.window
 
     def render(self, game: Game) -> None:
+        """Render one complete frame of board, preview, and score."""
+        # Refresh all UI regions before flushing to the terminal.
         self.display_board(game)
         self.display_piece(game.next_block)
         self.display_score(game)
         curses.doupdate()
 
     def show_game_over(self, game: Game) -> None:
+        """Display final score information and wait for a keypress."""
+        # Switch to blocking mode so the summary remains visible.
         self.stdscr.nodelay(False)
         self.stdscr.addstr(game.n_rows + 3, 0, "Game over!\n")
         self.stdscr.addstr(
@@ -65,6 +79,8 @@ class CursesOutputAdapter(OutputPort):
         self.stdscr.getch()
 
     def display_board(self, game: Game) -> None:
+        """Draw the current playfield into the board window."""
+        # Iterate row-major and render each board cell as a 2-char block.
         self.board_win.erase()
         self.board_win.box()
         for i in range(game.n_rows):
@@ -79,6 +95,8 @@ class CursesOutputAdapter(OutputPort):
         self.board_win.noutrefresh()
 
     def display_piece(self, block: Block | None) -> None:
+        """Draw the next-piece preview block."""
+        # Clear the preview area first, then draw the tetromino footprint.
         self.next_win.erase()
         self.next_win.box()
         if block is None:
@@ -93,6 +111,8 @@ class CursesOutputAdapter(OutputPort):
         self.next_win.noutrefresh()
 
     def display_score(self, game: Game) -> None:
+        """Draw score, level, and remaining lines in the score window."""
+        # Keep score labels fixed to avoid visual jitter between frames.
         self.score_win.erase()
         self.score_win.box()
         self.score_win.addstr(1, 1, "Score")
@@ -105,6 +125,8 @@ class CursesOutputAdapter(OutputPort):
 
     @staticmethod
     def add_block(win: curses.window, y: int, x: int, cell: Cell) -> None:
+        """Render a filled cell at the requested coordinates."""
+        # Use reverse-video colored spaces to make blocks look solid.
         color = int(cell)
         try:
             attrs = curses.color_pair(color) | curses.A_REVERSE
@@ -114,10 +136,14 @@ class CursesOutputAdapter(OutputPort):
 
     @staticmethod
     def add_empty(win: curses.window, y: int, x: int) -> None:
+        """Render an empty cell at the requested coordinates."""
+        # Overwrite with plain spaces to clear previous content.
         win.addstr(y, x, " " * COLS_PER_CELL)
 
 
 def init_colors() -> None:
+    """Configure curses color pairs for each tetromino cell type."""
+    # Register one color pair per non-empty cell enum value.
     curses.start_color()
     colors = {
         Cell.CELLI: curses.COLOR_CYAN,
@@ -133,6 +159,8 @@ def init_colors() -> None:
 
 
 def run_terminal_app(stdscr: curses.window) -> None:
+    """Create terminal adapters and run a full game session."""
+    # Initialize terminal behavior for real-time input and drawing.
     curses.curs_set(0)
     stdscr.keypad(True)
     stdscr.nodelay(True)
@@ -156,12 +184,15 @@ def run_terminal_app(stdscr: curses.window) -> None:
     use_case = RunGameSession(game, input_port, output_port, timing_port)
 
     try:
+        # Keep control flow in the use case until completion or user abort.
         use_case.run()
     except KeyboardInterrupt:
         pass
 
 
 def main() -> None:
+    """Entrypoint that boots the curses application wrapper."""
+    # Let curses manage terminal setup and teardown safely.
     curses.wrapper(run_terminal_app)
 
 

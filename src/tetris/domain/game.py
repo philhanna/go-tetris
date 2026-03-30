@@ -21,11 +21,15 @@ class BoundsError(ValueError):
 
 
 def new_board(rows: int, cols: int) -> list[list[Cell]]:
+    """Create an empty board with the requested dimensions."""
+    # Initialize every board position to an empty cell.
     return [[Cell.EMPTY for _ in range(cols)] for _ in range(rows)]
 
 
 @dataclass
 class Game:
+    """Aggregate root for all mutable Tetris game state and rules."""
+
     n_rows: int
     n_cols: int
     rng: Random = field(default_factory=Random)
@@ -39,16 +43,21 @@ class Game:
     lines_remaining: int = field(default=LINES_PER_LEVEL, init=False)
 
     def __post_init__(self) -> None:
+        """Initialize board state and queue initial blocks."""
+        # Prime the board and two-piece queue exactly once at startup.
         self.board = new_board(self.n_rows, self.n_cols)
         self.make_new_blocks()
         self.make_new_blocks()
 
     def adjust_score(self, lines_cleared: int) -> None:
+        """Apply score and level progression after line clears."""
+        # Apply NES-style score multipliers based on number of cleared lines.
         line_multiplier = [0, 40, 100, 300, 1200]
         points = line_multiplier[lines_cleared] * (self.level + 1)
         self.points += points
 
         if lines_cleared >= self.lines_remaining:
+            # Carry progression into the next level once the threshold is crossed.
             self.level = min(MAX_LEVEL, self.level + 1)
             lines_cleared = self.lines_remaining
             self.lines_remaining = LINES_PER_LEVEL - lines_cleared
@@ -56,9 +65,11 @@ class Game:
             self.lines_remaining -= lines_cleared
 
     def check_lines(self) -> int:
+        """Clear full rows and return the number removed."""
         if self.falling_block is None:
             return 0
 
+        # Remove the active block so line checks only inspect settled cells.
         self.remove(self.falling_block)
 
         n_lines = 0
@@ -66,24 +77,30 @@ class Game:
         while i >= 0:
             if self.line_full(i):
                 self.shift_lines(i)
+                # Re-check this index because rows above just shifted down.
                 i += 1
                 n_lines += 1
             i -= 1
 
+        # Restore the active block after line processing is complete.
         self.put(self.falling_block)
         return n_lines
 
     def do_gravity_tick(self) -> None:
+        """Advance gravity timer and move the active block when due."""
         if self.falling_block is None:
             return
 
+        # Decrement gravity timer every tick.
         self.ticks_remaining -= 1
         if self.ticks_remaining <= 0:
             self.remove(self.falling_block)
             self.falling_block.location.row += 1
             if self.fits(self.falling_block):
+                # Reset timer using the current level's gravity strength.
                 self.ticks_remaining = GRAVITY_LEVEL[self.level]
             else:
+                # Lock the block when it can no longer descend.
                 self.falling_block.location.row -= 1
                 self.put(self.falling_block)
                 self.make_new_blocks()
@@ -91,9 +108,11 @@ class Game:
                 self.put(self.falling_block)
 
     def down(self) -> None:
+        """Hard-drop the active block to the lowest valid row."""
         if self.falling_block is None:
             return
 
+        # Move downward until the next move would collide.
         self.remove(self.falling_block)
         while self.fits(self.falling_block):
             self.falling_block.location.row += 1
@@ -102,6 +121,8 @@ class Game:
         self.make_new_blocks()
 
     def fits(self, block: Block) -> bool:
+        """Return whether a block can occupy its current position."""
+        # Validate all occupied cells for bounds and collision.
         for i in range(NUM_CELLS):
             location = TETROMINOES[block.block_type][block.orientation][i]
             row = block.location.row + location.row
@@ -114,9 +135,11 @@ class Game:
         return True
 
     def game_over(self) -> bool:
+        """Return True when any settled block reaches the top rows."""
         if self.falling_block is None:
             return False
 
+        # Ignore the active block while checking if the stack reached the top.
         self.remove(self.falling_block)
         over = False
         for i in range(2):
@@ -127,11 +150,15 @@ class Game:
         return over
 
     def get(self, row: int, col: int) -> Cell:
+        """Get the cell value at a board coordinate."""
+        # Out-of-range reads are treated as empty to simplify callers.
         if not self.within_bounds(row, col):
             return Cell.EMPTY
         return self.board[row][col]
 
     def handle_move(self, move: Move) -> None:
+        """Dispatch an input move to the corresponding game action."""
+        # Convert input command into one atomic game mutation.
         if move == Move.LEFT:
             self.move(-1)
         elif move == Move.RIGHT:
@@ -144,19 +171,25 @@ class Game:
             self.rotate(-1)
 
     def line_full(self, row: int) -> bool:
+        """Return True when every cell in the row is occupied."""
+        # A line is full only if no cell is empty.
         for col in range(self.n_cols):
             if self.get(row, col) == Cell.EMPTY:
                 return False
         return True
 
     def make_new_blocks(self) -> None:
+        """Advance next block into play and generate a replacement."""
+        # Maintain a one-piece preview queue.
         self.falling_block = self.next_block
         self.next_block = self.random_block(self.n_cols)
 
     def move(self, direction: int) -> None:
+        """Move the active block horizontally if the destination fits."""
         if self.falling_block is None:
             return
 
+        # Apply movement optimistically, then roll back if invalid.
         self.remove(self.falling_block)
         self.falling_block.location.col += direction
         if not self.fits(self.falling_block):
@@ -164,6 +197,8 @@ class Game:
         self.put(self.falling_block)
 
     def put(self, block: Block) -> None:
+        """Write a block's cells onto the board."""
+        # Project each tetromino-relative location into board coordinates.
         for i in range(NUM_CELLS):
             location = TETROMINOES[block.block_type][block.orientation][i]
             new_row = block.location.row + location.row
@@ -171,6 +206,8 @@ class Game:
             self.set(new_row, new_col, type_to_cell(block.block_type))
 
     def remove(self, block: Block) -> None:
+        """Erase a block's cells from the board."""
+        # Clear each occupied cell of the block footprint.
         for i in range(NUM_CELLS):
             location = TETROMINOES[block.block_type][block.orientation][i]
             new_row = block.location.row + location.row
@@ -178,9 +215,11 @@ class Game:
             self.set(new_row, new_col, Cell.EMPTY)
 
     def rotate(self, direction: int) -> None:
+        """Rotate the active block, applying simple wall-kick attempts."""
         if self.falling_block is None:
             return
 
+        # Try rotated orientation, then left and right offsets if needed.
         self.remove(self.falling_block)
         while True:
             self.falling_block.orientation = (
@@ -202,6 +241,8 @@ class Game:
         self.put(self.falling_block)
 
     def set(self, row: int, col: int, value: Cell) -> None:
+        """Set a board cell, raising when coordinates are invalid."""
+        # Keep all writes in-bounds to preserve board integrity.
         if not self.within_bounds(row, col):
             raise BoundsError(
                 f"row {row} is not >= 0 and < {self.n_rows} or col {col} is not >= 0 and < {self.n_cols}"
@@ -209,12 +250,16 @@ class Game:
         self.board[row][col] = value
 
     def shift_lines(self, row: int) -> None:
+        """Shift all rows above the given row down by one."""
+        # Collapse the stack after a full-line clear.
         for i in range(row - 1, -1, -1):
             for j in range(self.n_cols):
                 self.set(i + 1, j, self.get(i, j))
                 self.set(i, j, Cell.EMPTY)
 
     def tick(self, move: Move) -> bool:
+        """Advance one frame of gameplay and report whether play continues."""
+        # Apply gravity, input, scoring, and terminal-state detection in order.
         self.do_gravity_tick()
         self.handle_move(move)
         lines_cleared = self.check_lines()
@@ -222,9 +267,13 @@ class Game:
         return not self.game_over()
 
     def within_bounds(self, row: int, col: int) -> bool:
+        """Return whether row and col are valid board coordinates."""
+        # Centralize bounds checks to keep callers consistent.
         return 0 <= row < self.n_rows and 0 <= col < self.n_cols
 
     def random_block(self, cols: int) -> Block:
+        """Generate a random tetromino at the standard spawn position."""
+        # Spawn all pieces centered at the top with orientation zero.
         types = [
             TetrominoType.I,
             TetrominoType.J,

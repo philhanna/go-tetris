@@ -3,6 +3,8 @@ from tetris.ports import TetrominoType
 
 
 def test_type_str() -> None:
+    """Verify string conversions for all tetromino enum values."""
+    # Ensure enum-to-display conversion remains stable.
     assert str(TetrominoType.I) == "I"
     assert str(TetrominoType.J) == "J"
     assert str(TetrominoType.L) == "L"
