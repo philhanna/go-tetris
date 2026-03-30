@@ -1,6 +1,6 @@
 # tests.test_game
 from tetris.domain.game import Game, new_board
-from tetris.domain.models import Cell
+from tetris.ports import Cell
 
 
 def get_test_game(n_rows: int, n_cols: int) -> Game:

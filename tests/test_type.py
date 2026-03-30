@@ -1,5 +1,5 @@
 # tests.test_type
-from tetris.domain.models import TetrominoType
+from tetris.ports import TetrominoType
 
 
 def test_type_str() -> None:

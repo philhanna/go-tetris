@@ -12,7 +12,7 @@ from tetris.domain.constants import (
     NUM_CELLS,
     NUM_ORIENTATIONS,
 )
-from tetris.domain.models import Block, Cell, Location, Move, TetrominoType, type_to_cell
+from tetris.ports import Block, Cell, Location, Move, TetrominoType, type_to_cell
 from tetris.domain.tetrominoes import TETROMINOES
 
 

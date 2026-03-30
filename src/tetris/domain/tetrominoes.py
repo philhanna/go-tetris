@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tetris.domain.models import Location, TetrominoType
+from tetris.ports import Location, TetrominoType
 
 TETROMINOES: dict[TetrominoType, tuple[tuple[Location, ...], ...]] = {
     TetrominoType.I: (

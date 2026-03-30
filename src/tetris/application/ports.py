@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from tetris.domain.game import Game
-from tetris.domain.models import Move
+from tetris.ports import Move
 
 
 class InputPort(Protocol):

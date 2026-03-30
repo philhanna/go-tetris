@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from tetris.application.ports import InputPort, OutputPort, TimingPort
 from tetris.domain.game import Game
-from tetris.domain.models import Block, Cell, Move, TetrominoType, type_to_cell
+from tetris.ports import Block, Cell, Move, TetrominoType, type_to_cell
 from tetris.domain.tetrominoes import TETROMINOES
 
 COLS_PER_CELL = 2
